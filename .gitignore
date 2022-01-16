@@ -1,8 +1,9 @@
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-*.test
-*.out
-*.pem
+**/*.exe
+**/*.exe~
+**/*.dll
+**/*.so
+**/*.dylib
+**/*.test
+**/*.out
+**/*.pem
+**/.idea

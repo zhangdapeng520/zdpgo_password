@@ -1,3 +1,3 @@
 module github.com/zhangdapeng520/zdpgo_password
 
-go 1.16
+go 1.17
