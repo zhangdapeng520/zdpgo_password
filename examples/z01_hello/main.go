@@ -1,11 +1,3 @@
-# zdpgo_password
-超简单的Golang密码加密便捷工具库
-
-项目地址：https://github.com/zhangdapeng520/zdpgo_password
-
-## 基本使用
-### 快速入门
-```go
 package main
 
 import (
@@ -31,7 +23,3 @@ func main() {
 	// 校验
 	fmt.Println(p.Md5Check("123456", result))
 }
-```
-
-## 版本历史
-- 2022年1月16日 版本0.1.0
