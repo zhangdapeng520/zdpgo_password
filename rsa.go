@@ -74,3 +74,73 @@ func (r *Rsa) GenerateKey(bitSize int, privateKeyName, publicKeyName string) {
 	privateKey := r.GeneratePrivateKey(bitSize, privateKeyName)
 	r.GeneratePublicKey(privateKey, publicKeyName)
 }
+
+//Encrypt RSA加密
+// @param plainText 要加密的数据
+// @param publicKeyPath 公钥匙文件地址
+func (r *Rsa) Encrypt(plainText []byte, publicKeyPath string) []byte {
+	//打开文件
+	file, err := os.Open(publicKeyPath)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	// 读取文件的内容
+	info, _ := file.Stat()
+	buf := make([]byte, info.Size())
+	file.Read(buf)
+
+	// pem解码
+	block, _ := pem.Decode(buf)
+
+	// x509解码
+	publicKeyInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		panic(err)
+	}
+
+	// 类型断言
+	publicKey := publicKeyInterface.(*rsa.PublicKey)
+
+	// 对明文进行加密
+	cipherText, err := rsa.EncryptPKCS1v15(rand.Reader, publicKey, plainText)
+	if err != nil {
+		panic(err)
+	}
+
+	// 返回密文
+	return cipherText
+}
+
+// Decrypt RSA解密
+// @param cipherText 需要解密的byte数据
+// @param privateKeyPath 私钥文件路径
+func (r *Rsa) Decrypt(cipherText []byte, privateKeyPath string) []byte {
+	//打开文件
+	file, err := os.Open(privateKeyPath)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	// 获取文件内容
+	info, _ := file.Stat()
+	buf := make([]byte, info.Size())
+	file.Read(buf)
+
+	// pem解码
+	block, _ := pem.Decode(buf)
+
+	// X509解码
+	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		panic(err)
+	}
+
+	// 对密文进行解密
+	plainText, _ := rsa.DecryptPKCS1v15(rand.Reader, privateKey, cipherText)
+
+	// 返回明文
+	return plainText
+}
