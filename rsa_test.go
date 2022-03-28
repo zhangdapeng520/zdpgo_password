@@ -36,10 +36,22 @@ func TestRsa_EncryptDecrypt(t *testing.T) {
 	// 加密
 	cipherText := r.Encrypt([]byte(data), "public.pem")
 	t.Log(cipherText)
-	t.Log(string(cipherText))
 
 	// 解密
 	result := r.Decrypt(cipherText, "private.pem")
 	t.Log(result)
-	t.Log(string(result))
+}
+
+// 测试签名和校验
+func TestRsa_SignVerify(t *testing.T) {
+	r := getRsa()
+	data := "hello 张大鹏!！！"
+
+	// 签名
+	signer := r.Sign(data, "private.pem")
+	t.Log(signer)
+
+	// 校验
+	flag := r.Verify(data, signer, "public.pem")
+	t.Log(flag)
 }
