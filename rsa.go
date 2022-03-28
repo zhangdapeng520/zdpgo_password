@@ -9,6 +9,20 @@ import (
 )
 
 type Rsa struct {
+	Config *RsaConfig // Rsa配置对象
+}
+
+// NewRsa 新建Rsa对象
+func NewRsa(config RsaConfig) *Rsa {
+	r := Rsa{}
+
+	// 初始化配置
+	r.Config = &config
+	if config.PrivateKeyPath == "" {
+
+	}
+
+	return &r
 }
 
 func (r *Rsa) GeneratePrivateKey(bitSize int, name string) *rsa.PrivateKey {
