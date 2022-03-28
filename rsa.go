@@ -19,18 +19,25 @@ func NewRsa(config RsaConfig) *Rsa {
 	r := Rsa{}
 
 	// 初始化配置
-	r.Config = &config
 	if config.PrivateKeyPath == "" {
-
+		config.PrivateKeyPath = "private.pem"
 	}
+	if config.PublicKeyPath == "" {
+		config.PublicKeyPath = "public.pem"
+	}
+	if config.BitSize == 0 {
+		config.BitSize = 2048
+	}
+	r.Config = &config
 
+	// 返回
 	return &r
 }
 
-func (r *Rsa) GeneratePrivateKey(bitSize int, name string) *rsa.PrivateKey {
+func (r *Rsa) GeneratePrivateKey() *rsa.PrivateKey {
 	// GenerateKey函数使用随机数据生成器random生成一对具有指定字位数的RSA密钥
 	// Reader是一个全局、共享的密码用强随机数生成器
-	privateKey, err := rsa.GenerateKey(rand.Reader, bitSize)
+	privateKey, err := rsa.GenerateKey(rand.Reader, r.Config.BitSize)
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +48,7 @@ func (r *Rsa) GeneratePrivateKey(bitSize int, name string) *rsa.PrivateKey {
 
 	// 使用pem格式对x509输出的内容进行编码
 	// 创建文件保存私钥
-	privateFile, err := os.Create(name)
+	privateFile, err := os.Create(r.Config.PrivateKeyPath)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +63,7 @@ func (r *Rsa) GeneratePrivateKey(bitSize int, name string) *rsa.PrivateKey {
 	return privateKey
 }
 
-func (r *Rsa) GeneratePublicKey(privateKey *rsa.PrivateKey, name string) {
+func (r *Rsa) GeneratePublicKey(privateKey *rsa.PrivateKey) {
 	// 保存公钥
 	// 获取公钥的数据
 	publicKey := privateKey.PublicKey
@@ -69,7 +76,7 @@ func (r *Rsa) GeneratePublicKey(privateKey *rsa.PrivateKey, name string) {
 
 	// pem格式编码
 	// 创建用于保存公钥的文件
-	publicFile, err := os.Create(name)
+	publicFile, err := os.Create(r.Config.PublicKeyPath)
 	if err != nil {
 		panic(err)
 	}
@@ -86,17 +93,17 @@ func (r *Rsa) GeneratePublicKey(privateKey *rsa.PrivateKey, name string) {
 // @param bitSize 证书大小
 // @param privateKeyName 私钥文件名
 // @param publicKeyName 公钥文件名
-func (r *Rsa) GenerateKey(bitSize int, privateKeyName, publicKeyName string) {
-	privateKey := r.GeneratePrivateKey(bitSize, privateKeyName)
-	r.GeneratePublicKey(privateKey, publicKeyName)
+func (r *Rsa) GenerateKey() {
+	privateKey := r.GeneratePrivateKey()
+	r.GeneratePublicKey(privateKey)
 }
 
 //Encrypt RSA加密
 // @param plainText 要加密的数据
 // @param publicKeyPath 公钥匙文件地址
-func (r *Rsa) Encrypt(plainText []byte, publicKeyPath string) string {
+func (r *Rsa) Encrypt(plainText []byte) string {
 	//打开文件
-	file, err := os.Open(publicKeyPath)
+	file, err := os.Open(r.Config.PublicKeyPath)
 	if err != nil {
 		panic(err)
 	}
@@ -135,12 +142,12 @@ func (r *Rsa) Encrypt(plainText []byte, publicKeyPath string) string {
 // Decrypt RSA解密
 // @param cipherText 需要解密的byte数据
 // @param privateKeyPath 私钥文件路径
-func (r *Rsa) Decrypt(b64Data string, privateKeyPath string) string {
+func (r *Rsa) Decrypt(b64Data string) string {
 	// base64解码
 	cipherText := Base64Decode(b64Data)
 
 	//打开文件
-	file, err := os.Open(privateKeyPath)
+	file, err := os.Open(r.Config.PrivateKeyPath)
 	if err != nil {
 		panic(err)
 	}
@@ -168,9 +175,9 @@ func (r *Rsa) Decrypt(b64Data string, privateKeyPath string) string {
 }
 
 // Sign 签名：采用sha1算法进行签名并输出为hex格式（私钥PKCS8格式）
-func (r *Rsa) Sign(plainText string, privateKeyPath string) string {
+func (r *Rsa) Sign(plainText string) string {
 	// 打开文件获取私匙
-	file, err := os.Open(privateKeyPath)
+	file, err := os.Open(r.Config.PrivateKeyPath)
 	if err != nil {
 		panic(err)
 	}
@@ -212,9 +219,9 @@ func (r *Rsa) Sign(plainText string, privateKeyPath string) string {
 }
 
 // Verify 验签：对采用sha1算法进行签名后转base64格式的数据进行验签
-func (r *Rsa) Verify(originalData, signData, pubKey string) bool {
+func (r *Rsa) Verify(originalData, signData string) bool {
 	// 打开文件获取公匙
-	file, err := os.Open(pubKey)
+	file, err := os.Open(r.Config.PublicKeyPath)
 	if err != nil {
 		panic(err)
 	}
