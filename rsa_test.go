@@ -46,6 +46,16 @@ func TestRsa_EncryptDecrypt(t *testing.T) {
 	t.Log(result)
 }
 
+// 测试解密
+func TestRsa_Decrypt(t *testing.T) {
+	r := getRsa()
+	data := "Sq6RlGy+Qdhi0CPTVmERVVeQMq0wW4yUwgmEgFptyYA/Qyx3JGPkEaCyuFXQda4QeWuTL+rS2UmZcCPJQvFNotWvhK785uIiRPGWz+nauwdHCv5VZR03xFjkeR9+Ry5TqUB/czD2BFfmmnjn8h0EBSPISh8pQuIXuoesLx79X5w="
+
+	// 解密
+	result := r.Decrypt(data)
+	t.Log(result)
+}
+
 // 测试签名和校验
 func TestRsa_SignVerify(t *testing.T) {
 	r := getRsa()
