@@ -6,8 +6,8 @@ import (
 
 func getRsa() *Rsa {
 	r := NewRsa(RsaConfig{
-		PrivateKeyPath: "public.pem",
-		PublicKeyPath:  "private.pem",
+		PrivateKeyPath: "private.pem",
+		PublicKeyPath:  "public.pem",
 		BitSize:        2048,
 	})
 	return r
