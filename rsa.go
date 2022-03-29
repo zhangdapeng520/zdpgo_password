@@ -4,9 +4,12 @@ import (
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/pem"
+	"io/ioutil"
 	"os"
 )
 
@@ -137,6 +140,71 @@ func (r *Rsa) Encrypt(plainText []byte) string {
 
 	// 返回密文
 	return b64Data
+}
+
+// EncryptSha1 此算法的加密结果能够被zdppy-python的RSA的decrypt方法解密
+func (r *Rsa) EncryptSha1(dataToEncrypt string) (string, error) {
+	// 获取公钥
+	publicKeyByte, err := ioutil.ReadFile(r.Config.PublicKeyPath)
+	if err != nil {
+		return "", err
+	}
+
+	// 获取块
+	block, _ := pem.Decode(publicKeyByte)
+
+	// 解析公钥
+	parseResultPublicKey, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return "", err
+	}
+
+	// 转换公钥
+	publicKey := parseResultPublicKey.(*rsa.PublicKey)
+
+	// 执行加密
+	encryptedBytes, err := rsa.EncryptOAEP(
+		sha1.New(),
+		rand.Reader,
+		publicKey,
+		[]byte(dataToEncrypt),
+		nil)
+	if err != nil {
+		panic(err)
+	}
+
+	// 将加密结果转换为base64编码的字符串然后返回
+	return Base64Encode(encryptedBytes), nil
+}
+
+// DecryptSha1 Sha1方式的RSA解密
+func (r *Rsa) DecryptSha1(ciphertextBase64 string) (string, error) {
+	// 获取私钥
+	privateKeyByte, err := ioutil.ReadFile(r.Config.PrivateKeyPath)
+	if err != nil {
+		return "", err
+	}
+
+	// 获取块
+	block, _ := pem.Decode(privateKeyByte)
+
+	// 解析私钥
+	privateKey, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
+
+	// 解析base64的字符串
+	b64Data, err := base64.StdEncoding.DecodeString(ciphertextBase64)
+	if err != nil {
+		return "", err
+	}
+
+	// 解密
+	decryptedBytes, err := privateKey.Decrypt(rand.Reader, b64Data, &rsa.OAEPOptions{Hash: crypto.SHA1})
+	if err != nil {
+		return "", err
+	}
+
+	// 正确解密
+	return string(decryptedBytes), nil
 }
 
 // Decrypt RSA解密

@@ -46,14 +46,33 @@ func TestRsa_EncryptDecrypt(t *testing.T) {
 	t.Log(result)
 }
 
-// 测试解密
-func TestRsa_Decrypt(t *testing.T) {
+// 测试加密
+func TestRsa_EncryptSha1(t *testing.T) {
 	r := getRsa()
-	data := "Sq6RlGy+Qdhi0CPTVmERVVeQMq0wW4yUwgmEgFptyYA/Qyx3JGPkEaCyuFXQda4QeWuTL+rS2UmZcCPJQvFNotWvhK785uIiRPGWz+nauwdHCv5VZR03xFjkeR9+Ry5TqUB/czD2BFfmmnjn8h0EBSPISh8pQuIXuoesLx79X5w="
+	data := "abc 123 张大鹏"
+
+	// 加密
+	result, err := r.EncryptSha1(data)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(result)
+}
+
+// 测试解密
+func TestRsa_DecryptSha1(t *testing.T) {
+	r := getRsa()
+	data := "j+Lc1OtOu+rF9d+cKvU7IUmQ/WNTQk20t5mEABcT2liWPic2KIuF8jbQrstBdvh7zmj1KIYf5z6PD9CNCfLPnthD6k1+tLVBWPkCj3x6LVrURInJRJTHh6QrcvxM1ZmT563/D0okw9O0cr8Qc3nMDT2/dUTEpzShT3dPG76ztoX4nSd4MMEbBIOTT3G7deglwMZNDVMfUmgLz2WTa2lijfTrL7rpGcD0ofeqjUXmYPo6OV0dQV6A1myJqcSHTGNcmwvaZhGVxrKW87nB5ZJnZcYkLfpm+1YFr93iR+Qj1ygjhTqnX5pwxyoNg090/1omvXYv8jSq2mhArAVncRl7KA=="
 
 	// 解密
-	result := r.Decrypt(data)
+	result, err := r.DecryptSha1(data)
+	if err != nil {
+		t.Error(err)
+	}
 	t.Log(result)
+
+	// 解密使用python加密的字符串
+
 }
 
 // 测试签名和校验

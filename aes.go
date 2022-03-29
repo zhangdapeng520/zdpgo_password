@@ -45,10 +45,13 @@ func (apg *Aes) Encrypt(src []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	//padding
 	src = apg.padding(src)
+
 	//返回加密结果
 	encryptData := make([]byte, len(src))
+
 	//存储每次加密的数据
 	tmpData := make([]byte, apg.config.BlockSize)
 
