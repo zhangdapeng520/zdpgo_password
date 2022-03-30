@@ -8,7 +8,7 @@ type RsaConfig struct {
 	Debug          bool   `yaml:"debug" json:"debug"`                       // 是否为开发环境
 }
 
-// AesConfig AES加密算法的配置
+// Aes AES加密算法的配置
 type AesConfig struct {
 	Key       string `yaml:"key" json:"key"`               // key
 	BlockSize int    `yaml:"block_size" json:"block_size"` // 块的大小

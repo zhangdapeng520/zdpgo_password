@@ -72,7 +72,12 @@ func TestRsa_DecryptSha1(t *testing.T) {
 	t.Log(result)
 
 	// 解密使用python加密的字符串
-
+	data = "S1j7yD+RlmQjeari4qoxLGzEO+BAPUOY2IOnqD7rEygfaDGy4ansvCTwKNfmfEpotS1KCkdcfliESkoQ/cw27Rm6AMPAMfQRqh2b4SqIpZTDG1dI4zkrL+zXSMXwDcaOerkLVFrLC2OUHBBf8Bry+dKUHw6ts3XkdrQZzHSgKfNwY6dRZlElbJL2M7zO0ciRF/r69+Ct4xX0u/Ctf+VlkL5+iYmt2HT04ydPp4h3FCAzDr8rx/Ms59pOvCgU/qrDBLyRudlvjooIB7VZFql7cqkUvjSew5EK4C4GAehJkwD+Nrq6sTb9dU3Db4EbtuuVUKdgNcV7HNrhs+9NlwqGLg=="
+	result, err = r.DecryptSha1(data)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(result)
 }
 
 // 测试签名和校验
