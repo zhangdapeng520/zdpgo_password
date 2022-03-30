@@ -6,7 +6,6 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"log"
 )
@@ -152,8 +151,6 @@ func (a *Aes) EncryptGcm(data, key string) (string, string, string) {
 	ciphertextWithoutTag, gcmTag := ciphertext[:(ciphertextWithTagLength-16)], ciphertext[(ciphertextWithTagLength-16):]
 
 	// 转换为base64
-	fmt.Println("nonce length:", len(nonce))
-	fmt.Println("gcmTag length:", len(gcmTag))
 	ciphertextWithoutTagBase64 := base64.StdEncoding.EncodeToString(ciphertextWithoutTag)
 	nonceBase64 := base64.StdEncoding.EncodeToString(nonce)
 	gcmTagBase64 := base64.StdEncoding.EncodeToString(gcmTag)
