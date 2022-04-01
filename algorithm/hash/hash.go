@@ -4,6 +4,9 @@ package hash
 type Hash struct {
 	Md5    *Md5        // md5加密对象
 	Hmac   *Hmac       // hmac加密对象
+	Sha1   *Sha1       // sha1加密对象
+	Sha256 *Sha256     // sha256加密对象
+	Sha512 *Sha512     // sha512加密对象
 	Config *HashConfig // 配置对象
 }
 
@@ -21,10 +24,19 @@ func New(config HashConfig) *Hash {
 	h.Config = &config
 
 	// md5加密对象
-	h.Md5 = NewMd5()
+	h.Md5 = NewMd5(config.Key)
 
 	// hmac加密对象
 	h.Hmac = NewHmac(config.Key, config.Algorithm)
+
+	// sha1加密对象
+	h.Sha1 = NewSha1(config.Key)
+
+	// sha256加密对象
+	h.Sha256 = NewSha256(config.Key)
+
+	// sha512加密对象
+	h.Sha512 = NewSha512(config.Key)
 
 	return &h
 }

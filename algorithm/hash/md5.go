@@ -9,11 +9,12 @@ import (
 
 // Md5 md5加密对象
 type Md5 struct {
+	Key string // 加密的key
 }
 
 // NewMd5 创建md5加密对象的实例
-func NewMd5() *Md5 {
-	return &Md5{}
+func NewMd5(key string) *Md5 {
+	return &Md5{Key: key}
 }
 
 // EncryptString 加密字符串
@@ -25,7 +26,7 @@ func (m *Md5) EncryptString(data string) (string, error) {
 	h.Write([]byte(data))
 
 	// 返回加密后的数据
-	return hex.EncodeToString(h.Sum(nil)), nil
+	return hex.EncodeToString(h.Sum([]byte(m.Key))), nil
 }
 
 // Encrypt 加密字节数组
@@ -37,5 +38,5 @@ func (m *Md5) Encrypt(data []byte) ([]byte, error) {
 	h.Write(data)
 
 	// 返回加密后的数据
-	return h.Sum(nil), nil
+	return h.Sum([]byte(m.Key)), nil
 }

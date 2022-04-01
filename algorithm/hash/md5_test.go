@@ -3,7 +3,7 @@ package hash
 import "testing"
 
 func getMd5() *Md5 {
-	return NewMd5()
+	return NewMd5("abc")
 }
 
 func TestMd5_Encrypt(t *testing.T) {

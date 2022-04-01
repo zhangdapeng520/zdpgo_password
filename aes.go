@@ -115,7 +115,6 @@ func (a *Aes) DecryptString(src string) (string, error) {
 }
 
 func generateRandomNonce() []byte {
-	//nonce := make([]byte, 12)
 	nonce := make([]byte, 16)
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
 		panic(err.Error())

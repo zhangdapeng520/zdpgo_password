@@ -2,10 +2,12 @@ package zdpgo_password
 
 import (
 	"fmt"
+	"github.com/zhangdapeng520/zdpgo_password/algorithm/aes"
 	"testing"
 )
 
 func getAes() *Aes {
+	aes.NewAes(aes.AesConfig{})
 	config := AesConfig{}
 	apg := NewAes(config)
 	return apg

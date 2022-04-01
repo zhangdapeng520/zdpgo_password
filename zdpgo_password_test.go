@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func prepareZdpPassword() *ZdpPassword {
-	passwordConfig := ZdpPasswordConfig{
+func prepareZdpPassword() *Password {
+	passwordConfig := PasswordConfig{
 		Debug: true,
 	}
 	p := New(passwordConfig)
