@@ -15,12 +15,14 @@ type AesGcm struct {
 	Key string
 }
 
+// NewAesGcm 创建GCM模式的AES加密对象
 func NewAesGcm(key string) *AesGcm {
 	a := AesGcm{Key: key}
 
 	return &a
 }
 
+// Encrypt 加密字节数组
 func (ac *AesGcm) Encrypt(data []byte) ([]byte, error) {
 	// 要加密的字符串
 	plaintext := []byte(data)
@@ -79,7 +81,7 @@ func (ac *AesGcm) EncryptString(data string) (string, error) {
 func (ac *AesGcm) Decrypt(data []byte) ([]byte, error) {
 	// 将数据转换为字符串
 	dataStr := string(data)
-	fmt.Println("加密数据222：", dataStr)
+
 	// 使用--进行切割
 	dataArr := strings.Split(dataStr, "--")
 

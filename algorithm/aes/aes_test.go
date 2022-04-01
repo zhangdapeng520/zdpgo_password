@@ -1,6 +1,10 @@
 package aes
 
-import "testing"
+import (
+	"encoding/base64"
+	"fmt"
+	"testing"
+)
 
 func getAes() *Aes {
 	return NewAes(AesConfig{})
@@ -137,6 +141,26 @@ func TestAes_self(t *testing.T) {
 
 	// 解密
 	decryptString, err := a.DecryptString(encryptString)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(decryptString)
+}
+
+func TestAes_python(t *testing.T) {
+	a := getAes()
+
+	// 从Python复制过来的
+	edata := "nZEhJnB7h6ow7pkA1WGHS6Qf0npQtuTbr6o="
+	nonce := "3KICnt6GJVxANgC2ikhTNA=="
+	tag := "gZUkLzz88GTDzNvA1vfzqA=="
+
+	// 使用 -- 拼接 并使用base64编码
+	data := fmt.Sprintf("%s--%s--%s", edata, nonce, tag)
+	b64Data := base64.StdEncoding.EncodeToString([]byte(data))
+
+	// 解密
+	decryptString, err := a.DecryptString(b64Data)
 	if err != nil {
 		t.Error(err)
 	}

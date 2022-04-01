@@ -79,17 +79,3 @@ func TestRsa_DecryptSha1(t *testing.T) {
 	}
 	t.Log(result)
 }
-
-// 测试签名和校验
-func TestRsa_SignVerify(t *testing.T) {
-	r := getRsa()
-	data := "hello 张大鹏!！！"
-
-	// 签名
-	signer := r.Sign(data)
-	t.Log(signer)
-
-	// 校验
-	flag := r.Verify(data, signer)
-	t.Log(flag)
-}
