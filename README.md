@@ -1,15 +1,20 @@
 # zdpgo_password
+
 超简单的Golang密码加密解密工具
 
 项目地址：https://github.com/zhangdapeng520/zdpgo_password
 
 ## 版本历史
+
 - 2022年1月16日 版本0.1.0
 - 2022年3月29日 版本0.1.1 AES加密和RSA加密
-
+- 2022年4月1日 版本1.1.0 ECC加密
+- 2022年4月1日 版本1.1.1 移除第三方依赖
 
 ## 基本使用
-### 案例1：快速入门
+
+### 快速入门
+
 ```go
 package main
 
@@ -38,7 +43,8 @@ func main() {
 }
 ```
 
-### 案例2：AES加密和解密
+### AES加密和解密
+
 ```go
 package main
 
@@ -104,7 +110,8 @@ func main() {
 }
 ```
 
-### 案例3：RSA加密和解密
+### RSA加密和解密
+
 ```go
 package main
 
@@ -167,5 +174,35 @@ func demo2() {
 func main() {
 	//demo1() // RSA加密和解密
 	demo2() // RSA SHA1加密和解密
+}
+```
+
+## ECC加密和解密
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/zhangdapeng520/zdpgo_password"
+)
+
+func main() {
+	ecc := zdpgo_password.NewEcc()
+	data := "abc 123 张大鹏"
+	// 加密
+	encrypt, err := ecc.Encrypt([]byte(data))
+	fmt.Println(encrypt, err)
+
+	// 解密
+	decrypt, err := ecc.Decrypt(encrypt)
+	fmt.Println(decrypt, err)
+
+	// 加密
+	encrypt1, err := ecc.EncryptString(data)
+	fmt.Println(encrypt1, err)
+
+	// 解密
+	decrypt1, err := ecc.DecryptString(encrypt1)
+	fmt.Println(decrypt1, err)
 }
 ```
