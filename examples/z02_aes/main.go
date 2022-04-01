@@ -11,24 +11,6 @@ func getAes() *zdpgo_password.Aes {
 	return aes
 }
 
-// AES加密和解密
-func demo1EncryptStringDecryptString() {
-	aes := getAes()
-
-	// 加密
-	encrypted := aes.EncryptString("{\"cmd\": 3000, \"msg\": \"ok\"}")
-	fmt.Println("encrypted:", encrypted)
-
-	// 解密
-	decrypted, _ := aes.DecryptString(encrypted)
-	fmt.Println("decrypted:", decrypted)
-
-	// 从python复制过来的
-	data := "0qg69fOjmE0oR59muWdXoWhr5d4Z0XyQaC69684mAsw="
-	decryptString, err := aes.DecryptString(data)
-	fmt.Println("解密Python：", decryptString, err)
-}
-
 // 测试aes gcm加密和解密
 func demo2EncryptGcm() {
 	tool := getAes()
@@ -57,6 +39,5 @@ func demo2EncryptGcm() {
 }
 
 func main() {
-	//demo1EncryptStringDecryptString() // AES加密和解密
 	demo2EncryptGcm()
 }
