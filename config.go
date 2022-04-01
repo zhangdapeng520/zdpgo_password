@@ -13,3 +13,9 @@ type AesConfig struct {
 	Key       string `yaml:"key" json:"key"`               // key
 	BlockSize int    `yaml:"block_size" json:"block_size"` // 块的大小
 }
+
+// PasswordConfig 密码配置对象
+type PasswordConfig struct {
+	Debug       bool   // 是否为debug模式
+	LogFilePath string // 日志路径
+}
