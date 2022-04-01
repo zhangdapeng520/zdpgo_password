@@ -7,11 +7,11 @@ type Hash struct {
 	Sha1   *Sha1       // sha1加密对象
 	Sha256 *Sha256     // sha256加密对象
 	Sha512 *Sha512     // sha512加密对象
-	Config *HashConfig // 配置对象
+	config *HashConfig // 配置对象
 }
 
-// New 创建hash加密算法的实例
-func New(config HashConfig) *Hash {
+// NewHash 创建hash加密算法的实例
+func NewHash(config HashConfig) *Hash {
 	h := Hash{}
 
 	// 初始化配置
@@ -21,7 +21,7 @@ func New(config HashConfig) *Hash {
 	if config.Algorithm == "" {
 		config.Algorithm = "sha256"
 	}
-	h.Config = &config
+	h.config = &config
 
 	// md5加密对象
 	h.Md5 = NewMd5(config.Key)

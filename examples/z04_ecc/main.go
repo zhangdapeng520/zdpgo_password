@@ -6,21 +6,25 @@ import (
 )
 
 func main() {
-	ecc := zdpgo_password.NewEcc()
+	p := zdpgo_password.New(zdpgo_password.PasswordConfig{})
+
 	data := "abc 123 张大鹏"
-	// 加密
-	encrypt, err := ecc.Encrypt([]byte(data))
-	fmt.Println(encrypt, err)
+	fmt.Println(data)
 
-	// 解密
-	decrypt, err := ecc.Decrypt(encrypt)
-	fmt.Println(decrypt, err)
+	var (
+		result string
+		err    error
+	)
 
-	// 加密
-	encrypt1, err := ecc.EncryptString(data)
-	fmt.Println(encrypt1, err)
-
-	// 解密
-	decrypt1, err := ecc.DecryptString(encrypt1)
-	fmt.Println(decrypt1, err)
+	// 默认加密解密
+	result, err = p.Ecc.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Ecc.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }

@@ -5,39 +5,98 @@ import (
 	"github.com/zhangdapeng520/zdpgo_password"
 )
 
-func getAes() *zdpgo_password.Aes {
-	config := zdpgo_password.AesConfig{}
-	aes := zdpgo_password.NewAes(config)
-	return aes
-}
-
-// 测试aes gcm加密和解密
-func demo2EncryptGcm() {
-	tool := getAes()
-
-	// 加密
-	data := "{\"cmd\": 3000, \"msg\": \"ok\"}"
-	key := "_ZhangDapeng520%"
-	edata, nonce, tag := tool.EncryptGcm(data, key)
-
-	// 解密
-	decrypted, err := tool.DecryptGcm(edata, key, nonce, tag)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("decrypted:", decrypted)
-
-	// 从Python复制过来的
-	edata = "nZEhJnB7h6ow7pkA1WGHS6Qf0npQtuTbr6o="
-	nonce = "3KICnt6GJVxANgC2ikhTNA=="
-	tag = "gZUkLzz88GTDzNvA1vfzqA=="
-	decrypted, err = tool.DecryptGcm(edata, key, nonce, tag)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("从Python复制过来的:", decrypted)
-}
-
 func main() {
-	demo2EncryptGcm()
+	p := zdpgo_password.New(zdpgo_password.PasswordConfig{})
+
+	data := "abc 123 张大鹏"
+	fmt.Println(data)
+
+	var (
+		result string
+		err    error
+	)
+
+	// 默认加密解密
+	result, err = p.Aes.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// GCM模式加密解密
+	result, err = p.Aes.Gcm.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Gcm.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// OFB模式加密解密
+	result, err = p.Aes.Ofb.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Ofb.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// ECB模式加密解密
+	result, err = p.Aes.Ecb.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Ecb.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// CFB模式加密解密
+	result, err = p.Aes.Cfb.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Cfb.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// CTR模式加密解密
+	result, err = p.Aes.Ctr.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Ctr.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// CBC模式加密解密
+	result, err = p.Aes.Cbc.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Cbc.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }

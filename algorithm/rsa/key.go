@@ -11,7 +11,7 @@ import (
 func (r *Rsa) GeneratePrivateKey() *rsa.PrivateKey {
 	// GenerateKey函数使用随机数据生成器random生成一对具有指定字位数的RSA密钥
 	// Reader是一个全局、共享的密码用强随机数生成器
-	privateKey, err := rsa.GenerateKey(rand.Reader, r.Config.BitSize)
+	privateKey, err := rsa.GenerateKey(rand.Reader, r.config.BitSize)
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func (r *Rsa) GeneratePrivateKey() *rsa.PrivateKey {
 
 	// 使用pem格式对x509输出的内容进行编码
 	// 创建文件保存私钥
-	privateFile, err := os.Create(r.Config.PrivateKeyPath)
+	privateFile, err := os.Create(r.config.PrivateKeyPath)
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +50,7 @@ func (r *Rsa) GeneratePublicKey(privateKey *rsa.PrivateKey) {
 
 	// pem格式编码
 	// 创建用于保存公钥的文件
-	publicFile, err := os.Create(r.Config.PublicKeyPath)
+	publicFile, err := os.Create(r.config.PublicKeyPath)
 	if err != nil {
 		panic(err)
 	}

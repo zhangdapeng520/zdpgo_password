@@ -5,7 +5,7 @@ import (
 )
 
 func getHash() *Hash {
-	h := New(HashConfig{})
+	h := NewHash(HashConfig{})
 	return h
 }
 

@@ -1,21 +1,16 @@
 package zdpgo_password
 
-// RsaConfig RSA配置对象
-type RsaConfig struct {
-	PrivateKeyPath string `yaml:"private_key_path" json:"private_key_path"` // 私钥文件路径
-	PublicKeyPath  string `yaml:"public_key_path" json:"public_key_path"`   // 公钥文件路径
-	BitSize        int    `yaml:"bit_size" json:"bit_size"`                 // 私钥文件的key长度
-	Debug          bool   `yaml:"debug" json:"debug"`                       // 是否为开发环境
-}
-
-// Aes AES加密算法的配置
-type AesConfig struct {
-	Key       string `yaml:"key" json:"key"`               // key
-	BlockSize int    `yaml:"block_size" json:"block_size"` // 块的大小
-}
+import (
+	"github.com/zhangdapeng520/zdpgo_password/algorithm/aes"
+	"github.com/zhangdapeng520/zdpgo_password/algorithm/hash"
+	"github.com/zhangdapeng520/zdpgo_password/algorithm/rsa"
+)
 
 // PasswordConfig 密码配置对象
 type PasswordConfig struct {
-	Debug       bool   // 是否为debug模式
-	LogFilePath string // 日志路径
+	Debug       bool            // 是否为debug模式
+	LogFilePath string          // 日志路径
+	Aes         aes.AesConfig   `yaml:"aes" json:"aes"`   // AES加密核心配置
+	Rsa         rsa.RsaConfig   `yaml:"rsa" json:"rsa"`   // RSA加密核心配置
+	Hash        hash.HashConfig `yaml:"hash" json:"hash"` // HASH加密核心配置
 }

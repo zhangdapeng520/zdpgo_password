@@ -10,7 +10,7 @@ import (
 )
 
 type Rsa struct {
-	Config *RsaConfig // Rsa配置对象
+	config *RsaConfig // Rsa配置对象
 	Sha1   *RsaSha1   // sha1加密方式
 }
 
@@ -28,7 +28,7 @@ func NewRsa(config RsaConfig) *Rsa {
 	if config.BitSize == 0 {
 		config.BitSize = 2048
 	}
-	r.Config = &config
+	r.config = &config
 
 	// 加密对象
 	r.Sha1 = NewRsaSha1(config)
@@ -42,7 +42,7 @@ func NewRsa(config RsaConfig) *Rsa {
 // @param publicKeyPath 公钥匙文件地址
 func (r *Rsa) Encrypt(data []byte) ([]byte, error) {
 	//打开文件
-	file, err := os.Open(r.Config.PublicKeyPath)
+	file, err := os.Open(r.config.PublicKeyPath)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (r *Rsa) Encrypt(data []byte) ([]byte, error) {
 // @param privateKeyPath 私钥文件路径
 func (r *Rsa) Decrypt(data []byte) ([]byte, error) {
 	//打开文件
-	file, err := os.Open(r.Config.PrivateKeyPath)
+	file, err := os.Open(r.config.PrivateKeyPath)
 	if err != nil {
 		panic(err)
 	}

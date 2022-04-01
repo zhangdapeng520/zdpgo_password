@@ -1,8 +1,15 @@
-# zdpgo_password
+# Golang加密解密框架
 
 超简单的Golang密码加密解密工具
 
 项目地址：https://github.com/zhangdapeng520/zdpgo_password
+
+## 功能清单
+
+- 常用HASH加密
+- AES加密解密
+- RSA加密解密
+- ECC加密解密
 
 ## 版本历史
 
@@ -10,10 +17,11 @@
 - 2022年3月29日 版本0.1.1 AES加密和RSA加密
 - 2022年4月1日 版本1.1.0 ECC加密
 - 2022年4月1日 版本1.1.1 移除第三方依赖
+- 2022年4月1日 版本1.1.2 项目结构优化
 
 ## 基本使用
 
-### 快速入门
+### hash加密
 
 ```go
 package main
@@ -24,22 +32,50 @@ import (
 )
 
 func main() {
-	passwordConfig := zdpgo_password.ZdpPasswordConfig{
-		Debug: true,
+	p := zdpgo_password.New(zdpgo_password.PasswordConfig{})
+
+	data := "abc 123 张大鹏"
+	fmt.Println(data)
+
+	var (
+		result string
+		err    error
+	)
+
+	// md5加密
+	result, err = p.Hash.Md5.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
 	}
-	p := zdpgo_password.New(passwordConfig)
-
-	// 默认密码加密方式
-	result := p.Make("123456")
 	fmt.Println(result)
-	// 检查
-	fmt.Println(p.Check("123456", result))
 
-	// md5密码加密方式
-	result = p.Md5("123456")
+	// hmac加密
+	result, err = p.Hash.Hmac.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Println(result)
-	// 校验
-	fmt.Println(p.Md5Check("123456", result))
+
+	// sha1加密
+	result, err = p.Hash.Sha1.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// sha256加密
+	result, err = p.Hash.Sha256.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// sha512加密
+	result, err = p.Hash.Sha512.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }
 ```
 
@@ -53,60 +89,100 @@ import (
 	"github.com/zhangdapeng520/zdpgo_password"
 )
 
-func getAes() *zdpgo_password.Aes {
-	config := zdpgo_password.AesConfig{}
-	aes := zdpgo_password.NewAes(config)
-	return aes
-}
-
-// AES加密和解密
-func demo1EncryptStringDecryptString() {
-	aes := getAes()
-
-	// 加密
-	encrypted := aes.EncryptString("{\"cmd\": 3000, \"msg\": \"ok\"}")
-	fmt.Println("encrypted:", encrypted)
-
-	// 解密
-	decrypted, _ := aes.DecryptString(encrypted)
-	fmt.Println("decrypted:", decrypted)
-
-	// 从python复制过来的
-	data := "0qg69fOjmE0oR59muWdXoWhr5d4Z0XyQaC69684mAsw="
-	decryptString, err := aes.DecryptString(data)
-	fmt.Println("解密Python：", decryptString, err)
-}
-
-// 测试aes gcm加密和解密
-func demo2EncryptGcm() {
-	tool := getAes()
-
-	// 加密
-	data := "{\"cmd\": 3000, \"msg\": \"ok\"}"
-	key := "_ZhangDapeng520%"
-	edata, nonce, tag := tool.EncryptGcm(data, key)
-
-	// 解密
-	decrypted, err := tool.DecryptGcm(edata, key, nonce, tag)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("decrypted:", decrypted)
-
-	// 从Python复制过来的
-	edata = "nZEhJnB7h6ow7pkA1WGHS6Qf0npQtuTbr6o="
-	nonce = "3KICnt6GJVxANgC2ikhTNA=="
-	tag = "gZUkLzz88GTDzNvA1vfzqA=="
-	decrypted, err = tool.DecryptGcm(edata, key, nonce, tag)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("从Python复制过来的:", decrypted)
-}
-
 func main() {
-	//demo1EncryptStringDecryptString() // AES加密和解密
-	demo2EncryptGcm()
+	p := zdpgo_password.New(zdpgo_password.PasswordConfig{})
+
+	data := "abc 123 张大鹏"
+	fmt.Println(data)
+
+	var (
+		result string
+		err    error
+	)
+
+	// 默认加密解密
+	result, err = p.Aes.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// GCM模式加密解密
+	result, err = p.Aes.Gcm.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Gcm.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// OFB模式加密解密
+	result, err = p.Aes.Ofb.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Ofb.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// ECB模式加密解密
+	result, err = p.Aes.Ecb.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Ecb.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// CFB模式加密解密
+	result, err = p.Aes.Cfb.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Cfb.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// CTR模式加密解密
+	result, err = p.Aes.Ctr.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Ctr.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// CBC模式加密解密
+	result, err = p.Aes.Cbc.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Aes.Cbc.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }
 ```
 
@@ -120,64 +196,45 @@ import (
 	"github.com/zhangdapeng520/zdpgo_password"
 )
 
-func getRsa() *zdpgo_password.Rsa {
-	r := zdpgo_password.NewRsa(zdpgo_password.RsaConfig{
-		PrivateKeyPath: "private.pem",
-		PublicKeyPath:  "public.pem",
-		BitSize:        2048,
-	})
-	return r
-}
-
-// RSA加密和解密
-func demo1() {
-	r := getRsa()
-	data := "hello 张大鹏!！！"
-
-	// 加密
-	cipherText := r.Encrypt([]byte(data))
-	fmt.Println(cipherText)
-
-	// 解密
-	result := r.Decrypt(cipherText)
-	fmt.Println(result)
-}
-
-func demo2() {
-	r := getRsa()
-	data := "abc 123 张大鹏"
-
-	// 加密
-	result, err := r.EncryptSha1(data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
-	data = "j+Lc1OtOu+rF9d+cKvU7IUmQ/WNTQk20t5mEABcT2liWPic2KIuF8jbQrstBdvh7zmj1KIYf5z6PD9CNCfLPnthD6k1+tLVBWPkCj3x6LVrURInJRJTHh6QrcvxM1ZmT563/D0okw9O0cr8Qc3nMDT2/dUTEpzShT3dPG76ztoX4nSd4MMEbBIOTT3G7deglwMZNDVMfUmgLz2WTa2lijfTrL7rpGcD0ofeqjUXmYPo6OV0dQV6A1myJqcSHTGNcmwvaZhGVxrKW87nB5ZJnZcYkLfpm+1YFr93iR+Qj1ygjhTqnX5pwxyoNg090/1omvXYv8jSq2mhArAVncRl7KA=="
-
-	// 解密
-	result, err = r.DecryptSha1(data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
-
-	// 解密使用python加密的字符串
-	data = "S1j7yD+RlmQjeari4qoxLGzEO+BAPUOY2IOnqD7rEygfaDGy4ansvCTwKNfmfEpotS1KCkdcfliESkoQ/cw27Rm6AMPAMfQRqh2b4SqIpZTDG1dI4zkrL+zXSMXwDcaOerkLVFrLC2OUHBBf8Bry+dKUHw6ts3XkdrQZzHSgKfNwY6dRZlElbJL2M7zO0ciRF/r69+Ct4xX0u/Ctf+VlkL5+iYmt2HT04ydPp4h3FCAzDr8rx/Ms59pOvCgU/qrDBLyRudlvjooIB7VZFql7cqkUvjSew5EK4C4GAehJkwD+Nrq6sTb9dU3Db4EbtuuVUKdgNcV7HNrhs+9NlwqGLg=="
-	result, err = r.DecryptSha1(data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
-}
-
 func main() {
-	//demo1() // RSA加密和解密
-	demo2() // RSA SHA1加密和解密
+	p := zdpgo_password.New(zdpgo_password.PasswordConfig{})
+
+	data := "abc 123 张大鹏"
+	fmt.Println(data)
+
+	var (
+		result string
+		err    error
+	)
+
+	// 默认加密解密
+	result, err = p.Rsa.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Rsa.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// SHA1模式加密解密
+	result, err = p.Rsa.Sha1.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Rsa.Sha1.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }
 ```
 
 ## ECC加密和解密
+
 ```go
 package main
 
@@ -187,22 +244,26 @@ import (
 )
 
 func main() {
-	ecc := zdpgo_password.NewEcc()
+	p := zdpgo_password.New(zdpgo_password.PasswordConfig{})
+
 	data := "abc 123 张大鹏"
-	// 加密
-	encrypt, err := ecc.Encrypt([]byte(data))
-	fmt.Println(encrypt, err)
+	fmt.Println(data)
 
-	// 解密
-	decrypt, err := ecc.Decrypt(encrypt)
-	fmt.Println(decrypt, err)
+	var (
+		result string
+		err    error
+	)
 
-	// 加密
-	encrypt1, err := ecc.EncryptString(data)
-	fmt.Println(encrypt1, err)
-
-	// 解密
-	decrypt1, err := ecc.DecryptString(encrypt1)
-	fmt.Println(decrypt1, err)
+	// 默认加密解密
+	result, err = p.Ecc.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = p.Ecc.DecryptString(result)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }
 ```

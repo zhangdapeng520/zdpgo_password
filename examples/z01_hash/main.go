@@ -16,25 +16,36 @@ func main() {
 		err    error
 	)
 
-	// 默认加密解密
-	result, err = p.Rsa.EncryptString(data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
-	result, err = p.Rsa.DecryptString(result)
+	// md5加密
+	result, err = p.Hash.Md5.EncryptString(data)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(result)
 
-	// SHA1模式加密解密
-	result, err = p.Rsa.Sha1.EncryptString(data)
+	// hmac加密
+	result, err = p.Hash.Hmac.EncryptString(data)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(result)
-	result, err = p.Rsa.Sha1.DecryptString(result)
+
+	// sha1加密
+	result, err = p.Hash.Sha1.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// sha256加密
+	result, err = p.Hash.Sha256.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// sha512加密
+	result, err = p.Hash.Sha512.EncryptString(data)
 	if err != nil {
 		fmt.Println(err)
 	}
