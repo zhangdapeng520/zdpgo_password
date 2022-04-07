@@ -27,9 +27,9 @@ func New(config PasswordConfig) *Password {
 	if config.LogFilePath == "" {
 		config.LogFilePath = "zdpgo_password.log"
 	}
-	logConfig := zdpgo_log.LogConfig{
-		Debug: config.Debug,
-		Path:  config.LogFilePath,
+	logConfig := zdpgo_log.Config{
+		Debug:       config.Debug,
+		LogFilePath: config.LogFilePath,
 	}
 	l := zdpgo_log.New(logConfig)
 	p.log = l
