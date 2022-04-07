@@ -65,6 +65,43 @@ func (ac *AesGcm) Encrypt(data []byte) ([]byte, error) {
 	return resultBytes, nil
 }
 
+// EncryptDataKeyNonceTag 加密字符串，并返回data，key，nonce，tag
+func (ac *AesGcm) EncryptDataKeyNonceTag(data string) (string, string, string, string, error) {
+	// 要加密的字符串
+	plaintext := []byte(data)
+
+	// 创建nonce
+	nonce := generateRandomNonce(16)
+
+	// 创建block
+	block, err := aes.NewCipher([]byte(ac.Key))
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// 创建gcm
+	//aesGCM, err := cipher.NewGCM(block)
+	aesGCM, err := cipher.NewGCMWithNonceSize(block, 16)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// 加密
+	ciphertext := aesGCM.Seal(nil, nonce, plaintext, nil)
+
+	// 获取tag
+	ciphertextWithTagLength := len(ciphertext)
+	ciphertextWithoutTag, gcmTag := ciphertext[:(ciphertextWithTagLength-16)], ciphertext[(ciphertextWithTagLength-16):]
+
+	// 转换为base64
+	ciphertextWithoutTagBase64 := base64.StdEncoding.EncodeToString(ciphertextWithoutTag)
+	nonceBase64 := base64.StdEncoding.EncodeToString(nonce)
+	gcmTagBase64 := base64.StdEncoding.EncodeToString(gcmTag)
+
+	// 返回结果：data, key, nonce, tag
+	return ciphertextWithoutTagBase64, ac.Key, nonceBase64, gcmTagBase64, nil
+}
+
 // EncryptString 加密字符串。返回的字符串是data, nonce, tag的base64编码，用--分割。
 func (ac *AesGcm) EncryptString(data string) (string, error) {
 	// 加密数据，得到字节数组
@@ -147,4 +184,16 @@ func (ac *AesGcm) DecryptString(b64Data string) (string, error) {
 
 	// 返回字符串
 	return string(decryptBytes), nil
+}
+
+// DecryptDataKeyNonceTag 根据data，key，nonce和tag解密数据
+func (ac *AesGcm) DecryptDataKeyNonceTag(data, key, nonce, tag string) (string, error) {
+	ac.Key = key
+	encryptString := strings.Join([]string{data, nonce, tag}, "--")
+	b64Data := base64.StdEncoding.EncodeToString([]byte(encryptString))
+	DecryptString, err := ac.DecryptString(b64Data)
+	if err != nil {
+		return "", err
+	}
+	return DecryptString, nil
 }

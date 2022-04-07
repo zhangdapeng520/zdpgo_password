@@ -46,3 +46,41 @@ func TestAesGcm_DecryptString(t *testing.T) {
 	}
 	t.Log(decrypt)
 }
+
+func TestAesGcm_EncryptDataKeyNonceTag(t *testing.T) {
+	a := getGcm()
+
+	data := "abc 123 张大鹏 *&……"
+
+	// 加密数据
+	data, key, nonce, tag, err := a.EncryptDataKeyNonceTag(data)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log("data: ", data)
+	t.Log("key: ", key)
+	t.Log("nonce: ", nonce)
+	t.Log("tag: ", tag)
+
+	// 解密数据
+	decryptString, err := a.DecryptDataKeyNonceTag(data, key, nonce, tag)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log("解密数据：", decryptString)
+}
+
+func TestAesGcm_DecryptDataKeyNonceTag(t *testing.T) {
+	a := getGcm()
+
+	// 解密Python的加密数据
+	data := "SHXypu0tkjGbWB+5e0dBHMpACbeNE6/eltI="
+	nonce := "maGhW6qDIQE/R/SDqTE46g=="
+	tag := "1NZVFilOdjASTQPm6ILNKg=="
+	key := "_ZhangDapeng520%"
+	decryptString, err := a.DecryptDataKeyNonceTag(data, key, nonce, tag)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(decryptString)
+}
