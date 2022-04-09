@@ -40,3 +40,39 @@ func (m *Md5) Encrypt(data []byte) ([]byte, error) {
 	// 返回加密后的数据
 	return h.Sum([]byte(m.Key)), nil
 }
+
+// EncryptNoKey 不使用任何Key加密字节数组
+// @param data 要加密的数据
+// 返回16进制的加密字符串
+func (m *Md5) EncryptNoKey(data []byte) string {
+	h := md5.New()
+	h.Write(data)
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+// CheckNoKey 检查加密字符串是否正确
+// @param srcStr md5加密后的16进制字符串
+// @param descData 要检查的加密前的数据
+// 返回一个布尔值
+func (m *Md5) CheckNoKey(srcStr string, descData []byte) bool {
+	t := m.EncryptNoKey(descData)
+	return t == srcStr
+}
+
+// EncryptStringNoKey 不使用任何Key加密字节数组
+// @param data 要加密的字符串
+// 返回16进制的加密字符串
+func (m *Md5) EncryptStringNoKey(data string) string {
+	h := md5.New()
+	h.Write([]byte(data))
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+// CheckStringNoKey 检查加密字符串是否正确
+// @param srcStr md5加密后的16进制字符串
+// @param descData 要检查的加密前的字符串
+// 返回一个布尔值
+func (m *Md5) CheckStringNoKey(srcStr string, descData string) bool {
+	t := m.EncryptNoKey([]byte(descData))
+	return t == srcStr
+}

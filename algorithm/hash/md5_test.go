@@ -23,3 +23,26 @@ func TestMd5_EncryptString(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// 测试不使用Key的md5加密
+func TestMd5_EncryptNoKey(t *testing.T) {
+	m := getMd5()
+
+	data := "abc"
+
+	// 加密
+	result := m.EncryptNoKey([]byte(data))
+	t.Log(result)
+
+	// 校验
+	flag := m.CheckNoKey(result, []byte(data))
+	t.Log(flag)
+
+	// 加密
+	result = m.EncryptStringNoKey(data)
+	t.Log(result)
+
+	// 校验
+	flag = m.CheckStringNoKey(result, data)
+	t.Log(flag)
+}
