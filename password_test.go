@@ -1,9 +1,9 @@
 package zdpgo_password
 
 import (
-	"github.com/zhangdapeng520/zdpgo_password/algorithm/aes"
-	"github.com/zhangdapeng520/zdpgo_password/algorithm/hash"
-	"github.com/zhangdapeng520/zdpgo_password/algorithm/rsa"
+	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/aes"
+	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/hash"
+	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/rsa"
 	"testing"
 )
 
@@ -223,4 +223,21 @@ func TestPassword_ecc(t *testing.T) {
 		t.Error(err)
 	}
 	t.Log(result)
+}
+
+// 测试基本使用
+func TestUrl_basic(t *testing.T) {
+	p := getPassword()
+	urlPath := "https://www.google.com?kw=张大鹏"
+
+	// 编码
+	urlEncode := p.Url.Encode(urlPath)
+	t.Log(urlEncode)
+
+	// 解码
+	urlDecode, err := p.Url.Decode(urlEncode)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(urlDecode)
 }

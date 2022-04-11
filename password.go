@@ -2,20 +2,22 @@ package zdpgo_password
 
 import (
 	"github.com/zhangdapeng520/zdpgo_log"
-	"github.com/zhangdapeng520/zdpgo_password/algorithm/aes"
-	"github.com/zhangdapeng520/zdpgo_password/algorithm/ecc"
-	"github.com/zhangdapeng520/zdpgo_password/algorithm/hash"
-	"github.com/zhangdapeng520/zdpgo_password/algorithm/rsa"
+	aes2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/aes"
+	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/ecc"
+	hash2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/hash"
+	rsa2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/rsa"
+	"github.com/zhangdapeng520/zdpgo_password/core/zurl"
 )
 
 // Password 密码加密核心对象
 type Password struct {
 	log    *zdpgo_log.Log  // 日志对象
 	config *PasswordConfig // 配置对象
-	Aes    *aes.Aes        // AES加密核心对象
-	Rsa    *rsa.Rsa        // RSA加密核心对象
-	Hash   *hash.Hash      // HASH加密核心对象
+	Aes    *aes2.Aes       // AES加密核心对象
+	Rsa    *rsa2.Rsa       // RSA加密核心对象
+	Hash   *hash2.Hash     // HASH加密核心对象
 	Ecc    *ecc.Ecc        // ECC加密核心对象
+	Url    *zurl.Url       // URL编码解码核心对象
 }
 
 // New 创建加密对象
@@ -38,26 +40,29 @@ func New(config PasswordConfig) *Password {
 	p.config = &config
 
 	// 创建AES加密对象
-	p.Aes = aes.NewAes(aes.AesConfig{
+	p.Aes = aes2.NewAes(aes2.AesConfig{
 		Key:       config.Aes.Key,
 		BlockSize: config.Aes.BlockSize,
 	})
 
 	// 创建RSA加密对象
-	p.Rsa = rsa.NewRsa(rsa.RsaConfig{
+	p.Rsa = rsa2.NewRsa(rsa2.RsaConfig{
 		PrivateKeyPath: config.Rsa.PrivateKeyPath,
 		PublicKeyPath:  config.Rsa.PublicKeyPath,
 		BitSize:        config.Rsa.BitSize,
 	})
 
 	// 创建HASH加密对象
-	p.Hash = hash.NewHash(hash.HashConfig{
+	p.Hash = hash2.NewHash(hash2.HashConfig{
 		Key:       config.Hash.Key,
 		Algorithm: config.Hash.Algorithm,
 	})
 
 	// 创建ECC加密对象
 	p.Ecc = ecc.NewEcc()
+
+	// 创建URL核心对象
+	p.Url = zurl.NewUrl()
 
 	// 返回密码对象
 	return &p
