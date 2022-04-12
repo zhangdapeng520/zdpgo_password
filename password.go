@@ -6,6 +6,7 @@ import (
 	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/ecc"
 	hash2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/hash"
 	rsa2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/rsa"
+	"github.com/zhangdapeng520/zdpgo_password/core/hex"
 	"github.com/zhangdapeng520/zdpgo_password/core/zurl"
 )
 
@@ -18,6 +19,7 @@ type Password struct {
 	Hash   *hash2.Hash     // HASH加密核心对象
 	Ecc    *ecc.Ecc        // ECC加密核心对象
 	Url    *zurl.Url       // URL编码解码核心对象
+	Hex    *hex.Hex        // 十六进制编码解码
 }
 
 // New 创建加密对象
@@ -63,6 +65,9 @@ func New(config PasswordConfig) *Password {
 
 	// 创建URL核心对象
 	p.Url = zurl.NewUrl()
+
+	// 创建HEX核心对象
+	p.Hex = hex.NewHex()
 
 	// 返回密码对象
 	return &p

@@ -241,3 +241,31 @@ func TestUrl_basic(t *testing.T) {
 	}
 	t.Log(urlDecode)
 }
+
+// 十六进制的基本使用
+func TestHex_basic(t *testing.T) {
+	data := "abc 123 张大鹏"
+
+	// 编码
+	h := getPassword()
+	encode := h.Hex.Encode([]byte(data))
+	t.Log(encode)
+
+	// 解码
+	decode, err := h.Hex.Decode(encode)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(string(decode))
+
+	// 编码字符串
+	encodeString := h.Hex.EncodeString(data)
+	t.Log(encodeString)
+
+	// 解码字符串
+	decodeString, err := h.Hex.DecodeString(encodeString)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(decodeString)
+}
