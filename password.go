@@ -35,7 +35,7 @@ func New(config PasswordConfig) *Password {
 		Debug:       config.Debug,
 		LogFilePath: config.LogFilePath,
 	}
-	l := zdpgo_log.New(logConfig)
+	l := zdpgo_log.NewWithConfig(logConfig)
 	p.log = l
 
 	// 生成配置

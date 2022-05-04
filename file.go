@@ -12,7 +12,7 @@ import (
 // EncryptFile 加密文件
 func (p *Password) EncryptFile(filePath string) error {
 	// 获取加密文件路径，加密文件名
-	encryptFilePath, encryptFileName, err := p.getEncryptFileName(filePath)
+	encryptFilePath, encryptFileName, err := p.GetEncryptFileName(filePath)
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (p *Password) EncryptFile(filePath string) error {
 // DecryptFile 解密文件
 func (p *Password) DecryptFile(filePath string) error {
 	// 获取加密文件路径，加密文件名
-	encryptFilePath, encryptFileName, err := p.getEncryptFileName(filePath)
+	encryptFilePath, encryptFileName, err := p.GetEncryptFileName(filePath)
 	if err != nil {
 		return err
 	}
@@ -75,6 +75,75 @@ func (p *Password) DecryptFile(filePath string) error {
 	}
 
 	return nil
+}
+
+// EncryptFileNoChangeName 加密文件且不修改文件名
+func (p *Password) EncryptFileNoChangeName(filePath string) error {
+	// 读取加密后的文件内容
+	readData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	// 使用AES解密文件内容
+	decryptData, err := p.Aes.Encrypt(readData)
+	if err != nil {
+		return err
+	}
+
+	// 将解密后的文件内容返回
+	err = ioutil.WriteFile(filePath, decryptData, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DecryptFileNoChangeName 解密文件且不修改文件名
+func (p *Password) DecryptFileNoChangeName(filePath string) error {
+	// 读取加密后的文件内容
+	readData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	// 使用AES解密文件内容
+	decryptData, err := p.Aes.Decrypt(readData)
+	if err != nil {
+		return err
+	}
+
+	// 将解密后的文件内容返回
+	err = ioutil.WriteFile(filePath, decryptData, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ReadEncryptFile 读取加密文件的内容
+func (p *Password) ReadEncryptFile(filePath string) (data []byte, err error) {
+	// 获取加密文件路径，加密文件名
+	encryptFilePath, encryptFileName, err := p.GetEncryptFileName(filePath)
+	if err != nil {
+		return
+	}
+
+	// 读取加密后的文件内容
+	readData, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", encryptFilePath, encryptFileName))
+	if err != nil {
+		return
+	}
+
+	// 使用AES解密文件内容
+	data, err = p.Aes.Decrypt(readData)
+	if err != nil {
+		return
+	}
+
+	return
 }
 
 // DecryptFileWithEncryptName 根据加密文件名解密文件
@@ -118,10 +187,10 @@ func (p *Password) DecryptFileWithEncryptName(encryptFilePath string) error {
 	return nil
 }
 
-// 获取加密文件名
+// GetEncryptFileName 获取加密文件名
 // @return decryptFilePath 加密文件路径
 // @return decryptFileName 加密文件文件名
-func (p *Password) getEncryptFileName(filePath string) (encryptFilePath string, encryptFileName string, err error) {
+func (p *Password) GetEncryptFileName(filePath string) (encryptFilePath string, encryptFileName string, err error) {
 	encryptFilePath, fileName := filepath.Split(filePath)
 	encryptFileName, err = p.Hash.Md5.EncryptString(fmt.Sprintf("%s:%s:%s", filePath, encryptFilePath, fileName))
 	if err != nil {

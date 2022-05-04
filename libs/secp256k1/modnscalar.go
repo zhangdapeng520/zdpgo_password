@@ -234,7 +234,7 @@ func (s *ModNScalar) overflows() uint32 {
 	// group order, being equal is also an overflow back to 0.
 	//
 	// Note that the words 5, 6, and 7 are all the max uint32 value, so there is
-	// no need to test if those individual words of the scalar exceeds them,
+	// no need to test.txt if those individual words of the scalar exceeds them,
 	// hence, only equality is checked for them.
 	highWordsEqual := constantTimeEq(s.n[7], orderWordSeven)
 	highWordsEqual &= constantTimeEq(s.n[6], orderWordSix)
@@ -1065,7 +1065,7 @@ func (s *ModNScalar) IsOverHalfOrder() bool {
 	// scalar are equal to their corresponding word of the half group order.
 	//
 	// Note that the words 4, 5, and 6 are all the max uint32 value, so there is
-	// no need to test if those individual words of the scalar exceeds them,
+	// no need to test.txt if those individual words of the scalar exceeds them,
 	// hence, only equality is checked for them.
 	result := constantTimeGreater(s.n[7], halfOrderWordSeven)
 	highWordsEqual := constantTimeEq(s.n[7], halfOrderWordSeven)

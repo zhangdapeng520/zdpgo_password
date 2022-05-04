@@ -275,7 +275,7 @@ func (f *FieldVal) SetBytes(b *[32]byte) uint32 {
 	// zero and one, because ceil(log_2(2^256 - 1 - P)) = 33 bits max and the
 	// internal field representation encodes 26 bits with each word.
 	//
-	// Thus, there is no need to test if the upper words of the field value
+	// Thus, there is no need to test.txt if the upper words of the field value
 	// exceeds them, hence, only equality is checked for them.
 	highWordsEq := constantTimeEq(f.n[9], fieldPrimeWordNine)
 	highWordsEq &= constantTimeEq(f.n[8], fieldPrimeWordEight)
@@ -1627,7 +1627,7 @@ func (f *FieldVal) IsGtOrEqPrimeMinusOrder() bool {
 	// n[3] = 0x006542dd
 	// n[4] = 0x01455123
 	//
-	// This can be verified with the following test code:
+	// This can be verified with the following test.txt code:
 	//   pMinusN := new(big.Int).Sub(curveParams.P, curveParams.N)
 	//   var fv FieldVal
 	//   fv.SetByteSlice(pMinusN.Bytes())
