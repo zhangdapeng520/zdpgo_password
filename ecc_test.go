@@ -34,3 +34,24 @@ func TestEcc_EncryptDecrypt(t *testing.T) {
 		panic("加密前的数据和解密后的数据不一致")
 	}
 }
+
+// 测试签名和校验
+func TestEcc_SignVerify(t *testing.T) {
+	p := New(&Config{})
+	e := p.GetEcc()
+
+	s := "abc"
+	data := []byte(s)
+
+	// 数据签名
+	signData, err := e.Sign(data)
+	if err != nil {
+		panic(err)
+	}
+
+	// 校验数据
+	flag := e.Verify(data, signData)
+	if !flag {
+		panic("校验结果错误")
+	}
+}

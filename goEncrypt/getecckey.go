@@ -1,4 +1,4 @@
-package zdpgo_password
+package goEncrypt
 
 import (
 	"crypto/ecdsa"
@@ -6,23 +6,19 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"encoding/pem"
+	"log"
 	"os"
 )
 
 /*
-@Time : 2022/6/1 16:17
-@Author : 张大鹏
-@File : key.go
-@Software: Goland2021.3.1
-@Description:
+@Time : 2018/11/4 16:22
+@Author : wuman
+@File : GetECCKey
+@Software: GoLand
 */
-
-const (
-	eccPrivateKeyPrefix = " WUMAN ECC PRIVATE KEY "
-	eccPublicKeyPrefix  = " WUMAN ECC PUBLIC KEY "
-	eccPrivateFileName  = "eccprivate.pem"
-	eccPublishFileName  = "eccpublic.pem"
-)
+func init() {
+	log.SetFlags(log.Ldate | log.Lshortfile)
+}
 
 func GetEccKey() error {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
