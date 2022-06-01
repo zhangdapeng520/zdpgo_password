@@ -12,34 +12,44 @@ import (
 
 // Password 密码加密核心对象
 type Password struct {
-	log    *zdpgo_log.Log  // 日志对象
-	config *PasswordConfig // 配置对象
-	Aes    *aes2.Aes       // AES加密核心对象
-	Rsa    *rsa2.Rsa       // RSA加密核心对象
-	Hash   *hash2.Hash     // HASH加密核心对象
-	Ecc    *ecc.Ecc        // ECC加密核心对象
-	Url    *zurl.Url       // URL编码解码核心对象
-	Hex    *hex.Hex        // 十六进制编码解码
+	Log    *zdpgo_log.Log // 日志对象
+	Config *Config        // 配置对象
+	Aes    *aes2.Aes      // AES加密核心对象
+	Rsa    *rsa2.Rsa      // RSA加密核心对象
+	Hash   *hash2.Hash    // HASH加密核心对象
+	Ecc    *ecc.Ecc       // ECC加密核心对象
+	Url    *zurl.Url      // URL编码解码核心对象
+	Hex    *hex.Hex       // 十六进制编码解码
 }
 
 // New 创建加密对象
-func New(config PasswordConfig) *Password {
+func New(config *Config) *Password {
 	// 创建密码对象
 	p := Password{}
 
 	// 生成日志对象
 	if config.LogFilePath == "" {
-		config.LogFilePath = "zdpgo_password.log"
+		config.LogFilePath = "logs/zdpgo/zdpgo_password.log"
 	}
-	logConfig := zdpgo_log.Config{
-		Debug:       config.Debug,
-		LogFilePath: config.LogFilePath,
-	}
-	l := zdpgo_log.NewWithConfig(logConfig)
-	p.log = l
+	p.Log = zdpgo_log.NewWithDebug(config.Debug, config.LogFilePath)
 
 	// 生成配置
-	p.config = &config
+	if config.KeyPath == "" {
+		config.KeyPath = ".zdpgo_password_keys"
+	}
+	if config.EccKey.PrivateKeyPrefix == "" {
+		config.EccKey.PrivateKeyPrefix = " ZDPGO_PASSWORD ECC PRIVATE KEY "
+	}
+	if config.EccKey.PublicKeyPrefix == "" {
+		config.EccKey.PublicKeyPrefix = " ZDPGO_PASSWORD ECC PUBLIC KEY "
+	}
+	if config.EccKey.PrivateKeyFileName == "" {
+		config.EccKey.PrivateKeyFileName = "ecc_private.pem"
+	}
+	if config.EccKey.PublicKeyFileName == "" {
+		config.EccKey.PublicKeyFileName = "ecc_public.pem"
+	}
+	p.Config = config
 
 	// 创建AES加密对象
 	p.Aes = aes2.NewAes(aes2.AesConfig{
@@ -71,4 +81,17 @@ func New(config PasswordConfig) *Password {
 
 	// 返回密码对象
 	return &p
+}
+
+// GetEcc 获取ECC加密对象
+func (p *Password) GetEcc() *Ecc {
+	e := &Ecc{
+		Config: p.Config,
+		Log:    p.Log,
+	}
+	err := e.InitKey()
+	if err != nil {
+		p.Log.Error("初始化公钥和私钥失败")
+	}
+	return e
 }

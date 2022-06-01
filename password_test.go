@@ -8,7 +8,7 @@ import (
 )
 
 func getPassword() *Password {
-	p := New(PasswordConfig{
+	p := New(&Config{
 		Debug:       true,
 		LogFilePath: "",
 		Aes:         aes.AesConfig{},
