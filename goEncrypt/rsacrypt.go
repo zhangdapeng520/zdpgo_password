@@ -9,16 +9,6 @@ import (
 	"runtime"
 )
 
-/*
-@Time : 2018/11/2 19:04
-@Author : wuman
-@File : rsacrypt
-@Software: GoLand
-*/
-
-/*
-	Operation with rsa encryption
-*/
 func init() {
 	log.SetFlags(log.Ldate | log.Lshortfile)
 }

@@ -186,6 +186,45 @@ func (e *Ecc) Decrypt(cryptData []byte) ([]byte, error) {
 	return data, nil
 }
 
+// DecryptByKey 通过特定的私钥进行解密
+func (e *Ecc) DecryptByKey(cryptData, privateKey []byte) ([]byte, error) {
+	data, err := goEncrypt.EccDecrypt(cryptData, privateKey)
+	if err != nil {
+		e.Log.Error("ECC解密数据失败", "error", err)
+		return nil, err
+	}
+
+	// 返回解密后的数据
+	return data, nil
+}
+
+// EncryptString 加密字符串
+func (e *Ecc) EncryptString(data string) (string, error) {
+	encryptData, err := e.Encrypt([]byte(data))
+	if err != nil {
+		e.Log.Error("加密数据失败", "error", err)
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(encryptData), nil
+}
+
+// DecryptString 解密字符串
+func (e *Ecc) DecryptString(cryptData string) (string, error) {
+	decodeData, err := base64.StdEncoding.DecodeString(cryptData)
+	if err != nil {
+		e.Log.Error("base64解密字符串失败", "error", err)
+		return "", err
+	}
+
+	decrypt, err := e.Decrypt(decodeData)
+	if err != nil {
+		e.Log.Error("ECC解密字符串失败", "error", err)
+		return "", err
+	}
+
+	return string(decrypt), nil
+}
+
 // Sign 对数据进行签名
 func (e *Ecc) Sign(data []byte) ([]byte, error) {
 	// 读取私钥

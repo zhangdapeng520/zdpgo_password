@@ -7,17 +7,6 @@ import (
 	"runtime"
 )
 
-/*
-@Time : 2018/11/1 21:28
-@Author : wuman
-@File : DES_CBC
-@Software: GoLand
-*/
-/**
-1. Group plaintext
-	DES CBC mode encryption and decryption, is an 8-byte block encryption
-	If the group is not an integer multiple of 8, you need to consider completing the 8 bits2.
-*/
 func init() {
 	log.SetFlags(log.Ldate | log.Lshortfile)
 }

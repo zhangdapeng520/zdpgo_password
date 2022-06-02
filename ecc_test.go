@@ -35,6 +35,63 @@ func TestEcc_EncryptDecrypt(t *testing.T) {
 	}
 }
 
+// 测试通过私钥解密数据
+func TestEcc_EncryptDecryptByKey(t *testing.T) {
+	p := New(&Config{})
+	e := p.GetEcc()
+
+	s := "abc"
+	data := []byte(s)
+	key := `-----BEGIN  ZDPGO_PASSWORD ECC PRIVATE KEY -----
+MHcCAQEEIKyfOnD7NdXudekftRtH2mBuOPf/UTzJ1Ulo2Hiu22XvoAoGCCqGSM49
+AwEHoUQDQgAEXClGdjDvOFSHJzs2LtSfGcVzP58cc9ybrYOo7t6bs818HMybbahM
+Qylb+qB4aTtHV0JPqZAr8MChRmvze7nNFw==
+-----END  ZDPGO_PASSWORD ECC PRIVATE KEY -----
+`
+
+	// 加密数据
+	encryptData, err := e.Encrypt(data)
+	if err != nil {
+		panic(err)
+	}
+
+	// 解密数据
+	decrypt, err := e.DecryptByKey(encryptData, []byte(key))
+	if err != nil {
+		panic(err)
+	}
+
+	// 比较结果
+	if s != string(decrypt) {
+		panic("加密前的数据和解密后的数据不一致")
+	}
+}
+
+// 测试加密和解密字符串
+func TestEcc_EncryptStringDecryptString(t *testing.T) {
+	p := New(&Config{})
+	e := p.GetEcc()
+
+	s := "abc"
+
+	// 加密数据
+	encryptString, err := e.EncryptString(s)
+	if err != nil {
+		panic(err)
+	}
+
+	// 解密数据
+	decryptString, err := e.DecryptString(encryptString)
+	if err != nil {
+		panic(err)
+	}
+
+	// 比较结果
+	if s != decryptString {
+		panic("加密前的数据和解密后的数据不一致")
+	}
+}
+
 // 测试签名和校验
 func TestEcc_SignVerify(t *testing.T) {
 	p := New(&Config{})

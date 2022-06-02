@@ -11,13 +11,6 @@ import (
 	"runtime"
 )
 
-/*
-@Time : 2018/11/4 18:51
-@Author : wuman
-@File : EccSign
-@Software: GoLand
-*/
-
 func init() {
 	log.SetFlags(log.Ldate | log.Lshortfile)
 }

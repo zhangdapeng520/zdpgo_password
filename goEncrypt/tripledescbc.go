@@ -7,17 +7,6 @@ import (
 	"runtime"
 )
 
-/*
-@Time : 2018/11/1 22:50
-@Author : wuman
-@File : TripleDES_CBC
-@Software: GoLand
-*/
-/**
-	Triple des encryption and decryption
-      algorithm : Encryption: key one encryption -> key two decryption -> key three encryption
-                  Decryption: key three decryption -> key two encryption -> key one decryption
-*/
 func TripleDesEncrypt(plainText, key, ivDes []byte) ([]byte, error) {
 	if len(key) != 24 {
 		return nil, ErrKeyLengthTwentyFour

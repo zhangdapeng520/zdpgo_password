@@ -3,7 +3,6 @@ package zdpgo_password
 import (
 	"github.com/zhangdapeng520/zdpgo_log"
 	aes2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/aes"
-	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/ecc"
 	hash2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/hash"
 	rsa2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/rsa"
 	"github.com/zhangdapeng520/zdpgo_password/core/hex"
@@ -17,7 +16,7 @@ type Password struct {
 	Aes    *aes2.Aes      // AES加密核心对象
 	Rsa    *rsa2.Rsa      // RSA加密核心对象
 	Hash   *hash2.Hash    // HASH加密核心对象
-	Ecc    *ecc.Ecc       // ECC加密核心对象
+	Ecc    *Ecc           // ECC加密核心对象
 	Url    *zurl.Url      // URL编码解码核心对象
 	Hex    *hex.Hex       // 十六进制编码解码
 }
@@ -71,7 +70,7 @@ func New(config *Config) *Password {
 	})
 
 	// 创建ECC加密对象
-	p.Ecc = ecc.NewEcc()
+	p.Ecc = p.GetEcc()
 
 	// 创建URL核心对象
 	p.Url = zurl.NewUrl()

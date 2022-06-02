@@ -46,7 +46,7 @@ func EccEncrypt(plainText, key []byte) (cryptText []byte, err error) {
 
 }
 
-// The private key and plaintext are passed in for decryption
+// EccDecrypt ECC解密数据
 func EccDecrypt(cryptText, key []byte) (msg []byte, err error) {
 	block, _ := pem.Decode(key)
 	defer func() {

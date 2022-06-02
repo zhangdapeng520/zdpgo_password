@@ -22,9 +22,9 @@ const (
 	eccPrivateFileName = "eccprivate.pem"
 	eccPublishFileName = "eccpublic.pem"
 
-	privateKeyPrefix = " WUMAN RSA PRIVATE KEY "
-	publicKeyPrefix  = " WUMAN  RSA PUBLIC KEY "
+	privateKeyPrefix = " ZDPGO_PASSWORD RSA PRIVATE KEY "
+	publicKeyPrefix  = " ZDPGO_PASSWORD  RSA PUBLIC KEY "
 
-	eccPrivateKeyPrefix = " WUMAN ECC PRIVATE KEY "
-	eccPublicKeyPrefix  = " WUMAN ECC PUBLIC KEY "
+	eccPrivateKeyPrefix = " ZDPGO_PASSWORD ECC PRIVATE KEY "
+	eccPublicKeyPrefix  = " ZDPGO_PASSWORD ECC PUBLIC KEY "
 )

@@ -7,17 +7,6 @@ import (
 	"runtime"
 )
 
-/*
-@Time : 2018/11/1 22:53
-@Author : wuman
-@File : AES_CBC
-@Software: GoLand
-*/
-/**
-eencrypt
-	Note: the key length is 16 bytes
-*/
-
 func init() {
 	log.SetFlags(log.Ldate | log.Lshortfile)
 }

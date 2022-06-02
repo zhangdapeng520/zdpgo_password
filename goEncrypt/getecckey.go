@@ -10,12 +10,6 @@ import (
 	"os"
 )
 
-/*
-@Time : 2018/11/4 16:22
-@Author : wuman
-@File : GetECCKey
-@Software: GoLand
-*/
 func init() {
 	log.SetFlags(log.Ldate | log.Lshortfile)
 }

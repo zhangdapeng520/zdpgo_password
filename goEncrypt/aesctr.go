@@ -5,15 +5,6 @@ import (
 	"crypto/cipher"
 )
 
-/*
-@Time : 2018/11/1 22:53
-@Author : wuman
-@File : AES_CTR
-@Software: GoLand
-*/
-/*
-	AES CTR mode encryption and decryption
-*/
 func AesCtrEncrypt(plainText, key, ivAes []byte) ([]byte, error) {
 	if len(key) != 16 && len(key) != 24 && len(key) != 32 {
 		return nil, ErrKeyLengthSixteen
