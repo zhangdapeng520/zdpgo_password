@@ -1,6 +1,8 @@
 package zdpgo_password
 
-import "testing"
+import (
+	"testing"
+)
 
 /*
 @Time : 2022/6/1 20:28
@@ -62,6 +64,37 @@ c9ybrYOo7t6bs818HMybbahMQylb+qB4aTtHV0JPqZAr8MChRmvze7nNFw==
 
 	// 解密数据
 	decrypt, err := e.DecryptByPrivateKey(encryptData, []byte(privateKey))
+	if err != nil {
+		panic(err)
+	}
+
+	// 比较结果
+	if s != string(decrypt) {
+		panic("加密前的数据和解密后的数据不一致")
+	}
+}
+
+func TestEcc_GetKey(t *testing.T) {
+	p := New(&Config{})
+	e := p.GetEcc()
+
+	s := "abc"
+	data := []byte(s)
+
+	// 获取私钥和公钥
+	privateKey, publicKey, err := e.GetKey()
+	if err != nil {
+		panic(err)
+	}
+
+	// 加密数据
+	encryptData, err := e.EncryptByPublicKey(data, publicKey)
+	if err != nil {
+		panic(err)
+	}
+
+	// 解密数据
+	decrypt, err := e.DecryptByPrivateKey(encryptData, privateKey)
 	if err != nil {
 		panic(err)
 	}

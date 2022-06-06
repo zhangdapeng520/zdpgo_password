@@ -9,17 +9,11 @@ import (
 	"runtime"
 )
 
-/*
-@Time : 2018/11/4 16:43
-@Author : wuman
-@File : EccCrypt
-@Software: GoLand
-*/
 func init() {
 	log.SetFlags(log.Ldate | log.Lshortfile)
 }
 
-// The public key and plaintext are passed in for encryption
+// EccEncrypt 使用公钥加密数据
 func EccEncrypt(plainText, key []byte) (cryptText []byte, err error) {
 	block, _ := pem.Decode(key)
 	defer func() {

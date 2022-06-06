@@ -31,6 +31,33 @@ type Ecc struct {
 	publicKey  []byte
 }
 
+// GetKey 生成ECC的私钥
+// @return 私钥，公钥，错误信息
+func (e *Ecc) GetKey() ([]byte, []byte, error) {
+	// 读取公钥
+	if e.publicKey == nil || len(e.privateKey) == 0 {
+		publicKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PublicKeyFileName))
+		if err != nil {
+			e.Log.Error("读取公钥失败", "error", err)
+			return nil, nil, err
+		}
+		e.publicKey = publicKey
+	}
+
+	// 读取私钥
+	if e.privateKey == nil || len(e.publicKey) == 0 {
+		privateKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PrivateKeyFileName))
+		if err != nil {
+			e.Log.Error("读取私钥失败", "error", err)
+			return nil, nil, err
+		}
+		e.privateKey = privateKey
+	}
+
+	// 返回
+	return e.privateKey, e.publicKey, nil
+}
+
 // InitKey 初始化key
 func (e *Ecc) InitKey() error {
 	var (
