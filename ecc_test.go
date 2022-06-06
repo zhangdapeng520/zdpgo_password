@@ -13,7 +13,7 @@ import (
 */
 
 func TestEcc_EncryptDecrypt(t *testing.T) {
-	p := New(&Config{})
+	p := New()
 	e := p.GetEcc()
 
 	s := "abc"
@@ -39,7 +39,7 @@ func TestEcc_EncryptDecrypt(t *testing.T) {
 
 // 测试通过私钥解密数据
 func TestEcc_EncryptDecryptByKey(t *testing.T) {
-	p := New(&Config{})
+	p := New()
 	e := p.GetEcc()
 
 	s := "abc"
@@ -75,7 +75,7 @@ c9ybrYOo7t6bs818HMybbahMQylb+qB4aTtHV0JPqZAr8MChRmvze7nNFw==
 }
 
 func TestEcc_GetKey(t *testing.T) {
-	p := New(&Config{})
+	p := New()
 	e := p.GetEcc()
 
 	s := "abc"
@@ -103,11 +103,38 @@ func TestEcc_GetKey(t *testing.T) {
 	if s != string(decrypt) {
 		panic("加密前的数据和解密后的数据不一致")
 	}
+
+	// 指定key
+	p = NewWithConfig(&Config{
+		Debug: true,
+		EccKey: Key{
+			PrivateKey: privateKey,
+			PublicKey:  publicKey,
+		},
+	})
+	e = p.GetEcc()
+
+	// 加密数据
+	encryptData, err = e.EncryptByPublicKey(data, publicKey)
+	if err != nil {
+		panic(err)
+	}
+
+	// 解密数据
+	decrypt, err = e.DecryptByPrivateKey(encryptData, privateKey)
+	if err != nil {
+		panic(err)
+	}
+
+	// 比较结果
+	if s != string(decrypt) {
+		panic("加密前的数据和解密后的数据不一致")
+	}
 }
 
 // 测试加密和解密字符串
 func TestEcc_EncryptStringDecryptString(t *testing.T) {
-	p := New(&Config{})
+	p := New()
 	e := p.GetEcc()
 
 	s := "abc"
@@ -132,7 +159,7 @@ func TestEcc_EncryptStringDecryptString(t *testing.T) {
 
 // 测试签名和校验
 func TestEcc_SignVerify(t *testing.T) {
-	p := New(&Config{})
+	p := New()
 	e := p.GetEcc()
 
 	s := "abc"
