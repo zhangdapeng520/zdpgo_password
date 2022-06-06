@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
+	"errors"
 	"github.com/zhangdapeng520/zdpgo_log"
 	"github.com/zhangdapeng520/zdpgo_password/goEncrypt"
 	"io/ioutil"
@@ -163,6 +164,24 @@ func (e *Ecc) Encrypt(data []byte) ([]byte, error) {
 	return cryptText, nil
 }
 
+// EncryptByPublicKey 指定公钥进行数据加密
+func (e *Ecc) EncryptByPublicKey(data, publicKey []byte) ([]byte, error) {
+	// 校验公钥
+	if publicKey == nil || len(publicKey) == 0 {
+		return nil, errors.New("公钥不能为空")
+	}
+
+	// 加密
+	cryptText, err := goEncrypt.EccEncrypt(data, publicKey)
+	if err != nil {
+		e.Log.Error("ECC加密数据失败", "error", err)
+		return nil, err
+	}
+
+	// 返回加密后的数据
+	return cryptText, nil
+}
+
 // Decrypt 解密数据
 func (e *Ecc) Decrypt(cryptData []byte) ([]byte, error) {
 	// 读取私钥
@@ -186,8 +205,8 @@ func (e *Ecc) Decrypt(cryptData []byte) ([]byte, error) {
 	return data, nil
 }
 
-// DecryptByKey 通过特定的私钥进行解密
-func (e *Ecc) DecryptByKey(cryptData, privateKey []byte) ([]byte, error) {
+// DecryptByPrivateKey 通过特定的私钥进行解密
+func (e *Ecc) DecryptByPrivateKey(cryptData, privateKey []byte) ([]byte, error) {
 	data, err := goEncrypt.EccDecrypt(cryptData, privateKey)
 	if err != nil {
 		e.Log.Error("ECC解密数据失败", "error", err)

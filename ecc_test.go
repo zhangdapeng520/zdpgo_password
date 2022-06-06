@@ -42,21 +42,26 @@ func TestEcc_EncryptDecryptByKey(t *testing.T) {
 
 	s := "abc"
 	data := []byte(s)
-	key := `-----BEGIN  ZDPGO_PASSWORD ECC PRIVATE KEY -----
+	privateKey := `-----BEGIN  ZDPGO_PASSWORD ECC PRIVATE KEY -----
 MHcCAQEEIKyfOnD7NdXudekftRtH2mBuOPf/UTzJ1Ulo2Hiu22XvoAoGCCqGSM49
 AwEHoUQDQgAEXClGdjDvOFSHJzs2LtSfGcVzP58cc9ybrYOo7t6bs818HMybbahM
 Qylb+qB4aTtHV0JPqZAr8MChRmvze7nNFw==
 -----END  ZDPGO_PASSWORD ECC PRIVATE KEY -----
 `
+	publicKey := `-----BEGIN  ZDPGO_PASSWORD ECC PUBLIC KEY -----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXClGdjDvOFSHJzs2LtSfGcVzP58c
+c9ybrYOo7t6bs818HMybbahMQylb+qB4aTtHV0JPqZAr8MChRmvze7nNFw==
+-----END  ZDPGO_PASSWORD ECC PUBLIC KEY -----
+`
 
 	// 加密数据
-	encryptData, err := e.Encrypt(data)
+	encryptData, err := e.EncryptByPublicKey(data, []byte(publicKey))
 	if err != nil {
 		panic(err)
 	}
 
 	// 解密数据
-	decrypt, err := e.DecryptByKey(encryptData, []byte(key))
+	decrypt, err := e.DecryptByPrivateKey(encryptData, []byte(privateKey))
 	if err != nil {
 		panic(err)
 	}
