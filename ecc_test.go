@@ -42,7 +42,7 @@ func TestEcc_EncryptDecryptByKey(t *testing.T) {
 	p := New()
 	e := p.GetEcc()
 
-	s := "abc"
+	s := "{\"age\":22}"
 	data := []byte(s)
 	privateKey := `-----BEGIN  ZDPGO_PASSWORD ECC PRIVATE KEY -----
 MHcCAQEEIKyfOnD7NdXudekftRtH2mBuOPf/UTzJ1Ulo2Hiu22XvoAoGCCqGSM49
@@ -147,6 +147,30 @@ func TestEcc_EncryptStringDecryptString(t *testing.T) {
 
 	// 解密数据
 	decryptString, err := e.DecryptString(encryptString)
+	if err != nil {
+		panic(err)
+	}
+
+	// 比较结果
+	if s != decryptString {
+		panic("加密前的数据和解密后的数据不一致")
+	}
+}
+
+func TestEcc_EncryptStringDecryptStringNoBase64(t *testing.T) {
+	p := New()
+	e := p.GetEcc()
+
+	s := "abc"
+
+	// 加密数据
+	encryptString, err := e.EncryptStringNoBase64(s)
+	if err != nil {
+		panic(err)
+	}
+
+	// 解密数据
+	decryptString, err := e.DecryptStringNoBase64(encryptString)
 	if err != nil {
 		panic(err)
 	}

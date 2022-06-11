@@ -254,6 +254,15 @@ func (e *Ecc) EncryptString(data string) (string, error) {
 	return base64.StdEncoding.EncodeToString(encryptData), nil
 }
 
+func (e *Ecc) EncryptStringNoBase64(data string) (string, error) {
+	encryptData, err := e.Encrypt([]byte(data))
+	if err != nil {
+		e.Log.Error("加密数据失败", "error", err)
+		return "", err
+	}
+	return string(encryptData), nil
+}
+
 // DecryptString 解密字符串
 func (e *Ecc) DecryptString(cryptData string) (string, error) {
 	decodeData, err := base64.StdEncoding.DecodeString(cryptData)
@@ -268,6 +277,15 @@ func (e *Ecc) DecryptString(cryptData string) (string, error) {
 		return "", err
 	}
 
+	return string(decrypt), nil
+}
+
+func (e *Ecc) DecryptStringNoBase64(cryptData string) (string, error) {
+	decrypt, err := e.Decrypt([]byte(cryptData))
+	if err != nil {
+		e.Log.Error("ECC解密字符串失败", "error", err)
+		return "", err
+	}
 	return string(decrypt), nil
 }
 
