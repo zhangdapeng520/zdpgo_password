@@ -9,32 +9,32 @@ import (
 	"github.com/zhangdapeng520/zdpgo_password/core/zurl"
 )
 
+var (
+	Log *zdpgo_log.Log
+)
+
 // Password 密码加密核心对象
 type Password struct {
-	Log    *zdpgo_log.Log // 日志对象
-	Config *Config        // 配置对象
-	Aes    *aes2.Aes      // AES加密核心对象
-	Rsa    *rsa2.Rsa      // RSA加密核心对象
-	Hash   *hash2.Hash    // HASH加密核心对象
-	Ecc    *Ecc           // ECC加密核心对象
-	Url    *zurl.Url      // URL编码解码核心对象
-	Hex    *hex.Hex       // 十六进制编码解码
+	Config *Config     // 配置对象
+	Aes    *aes2.Aes   // AES加密核心对象
+	Rsa    *rsa2.Rsa   // RSA加密核心对象
+	Hash   *hash2.Hash // HASH加密核心对象
+	Ecc    *Ecc        // ECC加密核心对象
+	Url    *zurl.Url   // URL编码解码核心对象
+	Hex    *hex.Hex    // 十六进制编码解码
 }
 
-func New() *Password {
-	return NewWithConfig(&Config{})
+func New(log *zdpgo_log.Log) *Password {
+	return NewWithConfig(&Config{}, log)
 }
 
 // NewWithConfig 创建加密对象
-func NewWithConfig(config *Config) *Password {
+func NewWithConfig(config *Config, log *zdpgo_log.Log) *Password {
 	// 创建密码对象
 	p := Password{}
 
 	// 生成日志对象
-	if config.LogFilePath == "" {
-		config.LogFilePath = "logs/zdpgo/zdpgo_password.log"
-	}
-	p.Log = zdpgo_log.NewWithDebug(config.Debug, config.LogFilePath)
+	p.SetLog(log)
 
 	// 生成配置
 	if config.KeyPath == "" {
@@ -86,11 +86,20 @@ func NewWithConfig(config *Config) *Password {
 	return &p
 }
 
+// SetLog 设置日志
+func SetLog(log *zdpgo_log.Log) {
+	Log = log
+}
+
+// SetLog 设置日志
+func (p *Password) SetLog(log *zdpgo_log.Log) {
+	SetLog(log)
+}
+
 // GetEcc 获取ECC加密对象
 func (p *Password) GetEcc() *Ecc {
 	e := &Ecc{
 		Config: p.Config,
-		Log:    p.Log,
 	}
 
 	// 私钥和公钥可以直接指定
@@ -105,7 +114,7 @@ func (p *Password) GetEcc() *Ecc {
 	if (e.privateKey == nil || len(e.privateKey) == 0) && (e.publicKey == nil || len(e.publicKey) == 0) {
 		err := e.InitKey()
 		if err != nil {
-			p.Log.Error("初始化公钥和私钥失败")
+			Log.Error("初始化公钥和私钥失败")
 		}
 	}
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/zhangdapeng520/zdpgo_log"
 	"github.com/zhangdapeng520/zdpgo_password"
 )
 
@@ -14,7 +15,7 @@ import (
 */
 
 func main() {
-	p := zdpgo_password.New()
+	p := zdpgo_password.New(zdpgo_log.NewWithDebug(true, "log.log"))
 	e := p.GetEcc()
 
 	s := "abc"

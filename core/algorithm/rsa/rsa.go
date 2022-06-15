@@ -82,7 +82,7 @@ func (r *Rsa) Decrypt(data []byte) ([]byte, error) {
 	//打开文件
 	file, err := os.Open(r.config.PrivateKeyPath)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer file.Close()
 
