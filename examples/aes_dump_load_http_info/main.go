@@ -9,14 +9,11 @@ import (
 
 func main() {
 	p := zdpgo_password.New(zdpgo_log.Tmp)
-	data := zdpgo_password.HttpServerInfo{
-		Host:     "localhost",
-		Port:     8888,
-		Username: "zhangdapeng520",
-		Password: "zhangdapeng520",
-		Email:    "zhangdapeng520@qq.com",
-		IsSsl:    true,
-	}
+	data := struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}{"zhangdapeng520", "zhangdapeng520"}
+
 	// 将对象加密保存为文件
 	err := p.AesDump("email", &data)
 	if err != nil {
