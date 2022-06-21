@@ -69,6 +69,27 @@ func (p *Password) AesDump(filePath string, jsonObj interface{}) error {
 	return nil
 }
 
+// AesDumpData 将json对象加密为并存储
+func (p *Password) AesDumpData(key string, jsonObj interface{}) error {
+	// 序列化JSON数据
+	jsonBytes, err := json.Marshal(jsonObj)
+	if err != nil {
+		p.Log.Error("json序列化对象失败", "error", err)
+		return err
+	}
+
+	// AES加密JSON数据
+	encryptBytes, err := p.Aes.Encrypt(jsonBytes)
+	if err != nil {
+		p.Log.Error("AES加密数据失败", "error", err)
+		return err
+	}
+
+	// 保存加密数据
+	p.BytesMap[key] = encryptBytes
+	return nil
+}
+
 // AesUpdate 更新加密文件内容
 func (p *Password) AesUpdate(filePath string, jsonObj interface{}, newAesKey string) error {
 	// 读取原本的内容
@@ -92,6 +113,31 @@ func (p *Password) AesUpdate(filePath string, jsonObj interface{}, newAesKey str
 	return nil
 }
 
+// AesUpdateData 更新加密的数据
+func (p *Password) AesUpdateData(key string, jsonObj interface{}, newAesKey string) error {
+	// 读取原本的内容
+	if value, ok := p.BytesMap[key]; ok {
+		err := p.AesLoadData(key, value, jsonObj)
+		if err != nil {
+			p.Log.Error("AES解密数据失败", "error", err)
+			return err
+		}
+
+		// 更新key
+		p.Aes.Config.Key = newAesKey
+
+		// 重新加密保存
+		err = p.AesDumpData(key, jsonObj)
+		if err != nil {
+			p.Log.Error("重新加密并保存数据失败", "error", err)
+			return err
+		}
+	}
+
+	// 返回
+	return nil
+}
+
 // AesLoad 将密码文件加载为指定对象
 func (p *Password) AesLoad(filePath string, jsonObj interface{}) error {
 	// 读取密码文件
@@ -103,6 +149,28 @@ func (p *Password) AesLoad(filePath string, jsonObj interface{}) error {
 
 	// AES解密数据
 	decryptedBytes, err := p.Aes.Decrypt(fileBytes)
+	if err != nil {
+		p.Log.Error("AES解密数据失败", "error", err)
+		return err
+	}
+
+	// 读取JSON数据
+	err = json.Unmarshal(decryptedBytes, jsonObj)
+	if err != nil {
+		p.Log.Error("解析JSON数据失败", "error", err)
+		return err
+	}
+
+	return nil
+}
+
+// AesLoadData 加载字节数据
+func (p *Password) AesLoadData(key string, data []byte, jsonObj interface{}) error {
+	// 保存数据
+	p.BytesMap[key] = data
+
+	// AES解密数据
+	decryptedBytes, err := p.Aes.Decrypt(data)
 	if err != nil {
 		p.Log.Error("AES解密数据失败", "error", err)
 		return err

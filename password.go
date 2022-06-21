@@ -11,14 +11,15 @@ import (
 
 // Password 密码加密核心对象
 type Password struct {
-	Config *Config     // 配置对象
-	Aes    *aes2.Aes   // AES加密核心对象
-	Rsa    *rsa2.Rsa   // RSA加密核心对象
-	Hash   *hash2.Hash // HASH加密核心对象
-	Ecc    *Ecc        // ECC加密核心对象
-	Url    *zurl.Url   // URL编码解码核心对象
-	Hex    *hex.Hex    // 十六进制编码解码
-	Log    *zdpgo_log.Log
+	Config   *Config     // 配置对象
+	Aes      *aes2.Aes   // AES加密核心对象
+	Rsa      *rsa2.Rsa   // RSA加密核心对象
+	Hash     *hash2.Hash // HASH加密核心对象
+	Ecc      *Ecc        // ECC加密核心对象
+	Url      *zurl.Url   // URL编码解码核心对象
+	Hex      *hex.Hex    // 十六进制编码解码
+	Log      *zdpgo_log.Log
+	BytesMap map[string][]byte // 用于存放bytes数组的字典
 }
 
 func New(log *zdpgo_log.Log) *Password {
@@ -28,7 +29,9 @@ func New(log *zdpgo_log.Log) *Password {
 // NewWithConfig 创建加密对象
 func NewWithConfig(config *Config, log *zdpgo_log.Log) *Password {
 	// 创建密码对象
-	p := Password{}
+	p := Password{
+		BytesMap: make(map[string][]byte),
+	}
 
 	// 生成日志对象
 	p.Log = log
