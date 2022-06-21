@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	p := zdpgo_password.New(zdpgo_log.NewWithDebug(true, "log.log"))
+	p := zdpgo_password.New(zdpgo_log.Tmp)
 
 	data := "abc 123 张大鹏"
 	fmt.Println(data)

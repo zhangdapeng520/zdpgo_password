@@ -3,6 +3,8 @@ module github.com/zhangdapeng520/zdpgo_password
 go 1.17
 
 require (
-	github.com/zhangdapeng520/zdpgo_log v1.3.4
-	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064
+	github.com/zhangdapeng520/zdpgo_log v1.3.5
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 )
+
+require golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect

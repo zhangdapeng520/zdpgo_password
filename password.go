@@ -9,10 +9,6 @@ import (
 	"github.com/zhangdapeng520/zdpgo_password/core/zurl"
 )
 
-var (
-	Log *zdpgo_log.Log
-)
-
 // Password 密码加密核心对象
 type Password struct {
 	Config *Config     // 配置对象
@@ -22,6 +18,7 @@ type Password struct {
 	Ecc    *Ecc        // ECC加密核心对象
 	Url    *zurl.Url   // URL编码解码核心对象
 	Hex    *hex.Hex    // 十六进制编码解码
+	Log    *zdpgo_log.Log
 }
 
 func New(log *zdpgo_log.Log) *Password {
@@ -34,7 +31,7 @@ func NewWithConfig(config *Config, log *zdpgo_log.Log) *Password {
 	p := Password{}
 
 	// 生成日志对象
-	p.SetLog(log)
+	p.Log = log
 
 	// 生成配置
 	if config.KeyPath == "" {
@@ -86,16 +83,6 @@ func NewWithConfig(config *Config, log *zdpgo_log.Log) *Password {
 	return &p
 }
 
-// SetLog 设置日志
-func SetLog(log *zdpgo_log.Log) {
-	Log = log
-}
-
-// SetLog 设置日志
-func (p *Password) SetLog(log *zdpgo_log.Log) {
-	SetLog(log)
-}
-
 // GetEcc 获取ECC加密对象
 func (p *Password) GetEcc() *Ecc {
 	e := &Ecc{
@@ -114,7 +101,7 @@ func (p *Password) GetEcc() *Ecc {
 	if (e.privateKey == nil || len(e.privateKey) == 0) && (e.publicKey == nil || len(e.publicKey) == 0) {
 		err := e.InitKey()
 		if err != nil {
-			Log.Error("初始化公钥和私钥失败")
+			p.Log.Error("初始化公钥和私钥失败")
 		}
 	}
 

@@ -1,6 +1,7 @@
 package zdpgo_password
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -36,6 +37,58 @@ func (p *Password) EncryptFile(filePath string) error {
 	// 移除原本的文件
 	err = os.Remove(filePath)
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AesDump 将json对象加密为文件
+func (p *Password) AesDump(filePath string, jsonObj interface{}) error {
+	// 序列化JSON数据
+	jsonBytes, err := json.Marshal(jsonObj)
+	if err != nil {
+		p.Log.Error("json序列化对象失败", "error", err)
+		return err
+	}
+
+	// AES加密JSON数据
+	encryptBytes, err := p.Aes.Encrypt(jsonBytes)
+	if err != nil {
+		p.Log.Error("AES加密数据失败", "error", err)
+		return err
+	}
+
+	// 保存文件
+	err = ioutil.WriteFile(filePath, encryptBytes, os.ModePerm)
+	if err != nil {
+		p.Log.Error("保存加密数据失败", "error", err)
+		return err
+	}
+
+	return nil
+}
+
+// AesLoad 将密码文件加载为指定对象
+func (p *Password) AesLoad(filePath string, jsonObj interface{}) error {
+	// 读取密码文件
+	fileBytes, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		p.Log.Error("读取密码文件失败", "error", err)
+		return err
+	}
+
+	// AES解密数据
+	decryptedBytes, err := p.Aes.Decrypt(fileBytes)
+	if err != nil {
+		p.Log.Error("AES解密数据失败", "error", err)
+		return err
+	}
+
+	// 读取JSON数据
+	err = json.Unmarshal(decryptedBytes, jsonObj)
+	if err != nil {
+		p.Log.Error("解析JSON数据失败", "error", err)
 		return err
 	}
 
