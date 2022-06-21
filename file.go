@@ -69,6 +69,29 @@ func (p *Password) AesDump(filePath string, jsonObj interface{}) error {
 	return nil
 }
 
+// AesUpdate 更新加密文件内容
+func (p *Password) AesUpdate(filePath string, jsonObj interface{}, newAesKey string) error {
+	// 读取原本的内容
+	err := p.AesLoad(filePath, jsonObj)
+	if err != nil {
+		p.Log.Error("读取原本的加密内容失败", "error", err)
+		return err
+	}
+
+	// 更新key
+	p.Aes.Config.Key = newAesKey
+
+	// 重新加密保存
+	err = p.AesDump(filePath, jsonObj)
+	if err != nil {
+		p.Log.Error("重新加密保存文件失败", "error", err)
+		return err
+	}
+
+	// 返回
+	return nil
+}
+
 // AesLoad 将密码文件加载为指定对象
 func (p *Password) AesLoad(filePath string, jsonObj interface{}) error {
 	// 读取密码文件

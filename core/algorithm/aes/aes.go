@@ -13,7 +13,7 @@ package aes
 // 输出反馈模式（Output FeedBack (OFB)）
 
 type Aes struct {
-	config *AesConfig // aes的配置
+	Config *AesConfig // aes的配置
 	Ecb    *AesEcb    // ECB模式加密对象
 	Cbc    *AesCbc    // CBC模式加密对象
 	Ctr    *AesCrt    // CTR模式加密对象
@@ -38,7 +38,7 @@ func NewAes(config AesConfig) *Aes {
 	if config.BlockSize == 0 {
 		config.BlockSize = 16
 	}
-	a.config = &config
+	a.Config = &config
 
 	// 加密对象
 	a.Ecb = NewAesEcb(config.Key)
