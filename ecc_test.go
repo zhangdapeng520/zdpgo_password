@@ -1,7 +1,6 @@
 package zdpgo_password
 
 import (
-	"github.com/zhangdapeng520/zdpgo_log"
 	"testing"
 )
 
@@ -14,9 +13,8 @@ import (
 */
 
 func TestEcc_EncryptDecrypt(t *testing.T) {
-	log := zdpgo_log.NewWithDebug(true, "log.log")
-	p := New(log)
-	e := p.GetEcc()
+	p := New()
+	e, _ := p.GetEcc()
 
 	s := "abc"
 	data := []byte(s)
@@ -41,9 +39,8 @@ func TestEcc_EncryptDecrypt(t *testing.T) {
 
 // 测试通过私钥解密数据
 func TestEcc_EncryptDecryptByKey(t *testing.T) {
-	log := zdpgo_log.NewWithDebug(true, "log.log")
-	p := New(log)
-	e := p.GetEcc()
+	p := New()
+	e, _ := p.GetEcc()
 
 	s := "{\"age\":22}"
 	data := []byte(s)
@@ -78,9 +75,8 @@ c9ybrYOo7t6bs818HMybbahMQylb+qB4aTtHV0JPqZAr8MChRmvze7nNFw==
 }
 
 func TestEcc_GetKey(t *testing.T) {
-	log := zdpgo_log.NewWithDebug(true, "log.log")
-	p := New(log)
-	e := p.GetEcc()
+	p := New()
+	e, _ := p.GetEcc()
 
 	s := "abc"
 	data := []byte(s)
@@ -109,14 +105,13 @@ func TestEcc_GetKey(t *testing.T) {
 	}
 
 	// 指定key
-	log = zdpgo_log.NewWithDebug(true, "log.log")
 	p = NewWithConfig(&Config{
 		EccKey: Key{
 			PrivateKey: privateKey,
 			PublicKey:  publicKey,
 		},
-	}, log)
-	e = p.GetEcc()
+	})
+	e, _ = p.GetEcc()
 
 	// 加密数据
 	encryptData, err = e.EncryptByPublicKey(data, publicKey)
@@ -138,9 +133,8 @@ func TestEcc_GetKey(t *testing.T) {
 
 // 测试加密和解密字符串
 func TestEcc_EncryptStringDecryptString(t *testing.T) {
-	log := zdpgo_log.NewWithDebug(true, "log.log")
-	p := New(log)
-	e := p.GetEcc()
+	p := New()
+	e, _ := p.GetEcc()
 
 	s := "abc"
 
@@ -163,9 +157,8 @@ func TestEcc_EncryptStringDecryptString(t *testing.T) {
 }
 
 func TestEcc_EncryptStringDecryptStringNoBase64(t *testing.T) {
-	log := zdpgo_log.NewWithDebug(true, "log.log")
-	p := New(log)
-	e := p.GetEcc()
+	p := New()
+	e, _ := p.GetEcc()
 
 	s := "abc"
 
@@ -189,9 +182,8 @@ func TestEcc_EncryptStringDecryptStringNoBase64(t *testing.T) {
 
 // 测试签名和校验
 func TestEcc_SignVerify(t *testing.T) {
-	log := zdpgo_log.NewWithDebug(true, "log.log")
-	p := New(log)
-	e := p.GetEcc()
+	p := New()
+	e, _ := p.GetEcc()
 
 	s := "abc"
 	data := []byte(s)

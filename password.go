@@ -1,7 +1,6 @@
 package zdpgo_password
 
 import (
-	"github.com/zhangdapeng520/zdpgo_log"
 	aes2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/aes"
 	hash2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/hash"
 	rsa2 "github.com/zhangdapeng520/zdpgo_password/core/algorithm/rsa"
@@ -11,30 +10,26 @@ import (
 
 // Password 密码加密核心对象
 type Password struct {
-	Config   *Config     // 配置对象
-	Aes      *aes2.Aes   // AES加密核心对象
-	Rsa      *rsa2.Rsa   // RSA加密核心对象
-	Hash     *hash2.Hash // HASH加密核心对象
-	Ecc      *Ecc        // ECC加密核心对象
-	Url      *zurl.Url   // URL编码解码核心对象
-	Hex      *hex.Hex    // 十六进制编码解码
-	Log      *zdpgo_log.Log
+	Config   *Config           // 配置对象
+	Aes      *aes2.Aes         // AES加密核心对象
+	Rsa      *rsa2.Rsa         // RSA加密核心对象
+	Hash     *hash2.Hash       // HASH加密核心对象
+	Ecc      *Ecc              // ECC加密核心对象
+	Url      *zurl.Url         // URL编码解码核心对象
+	Hex      *hex.Hex          // 十六进制编码解码
 	BytesMap map[string][]byte // 用于存放bytes数组的字典
 }
 
-func New(log *zdpgo_log.Log) *Password {
-	return NewWithConfig(&Config{}, log)
+func New() *Password {
+	return NewWithConfig(&Config{})
 }
 
 // NewWithConfig 创建加密对象
-func NewWithConfig(config *Config, log *zdpgo_log.Log) *Password {
+func NewWithConfig(config *Config) *Password {
 	// 创建密码对象
 	p := Password{
 		BytesMap: make(map[string][]byte),
 	}
-
-	// 生成日志对象
-	p.Log = log
 
 	// 生成配置
 	if config.KeyPath == "" {
@@ -74,7 +69,7 @@ func NewWithConfig(config *Config, log *zdpgo_log.Log) *Password {
 	})
 
 	// 创建ECC加密对象
-	p.Ecc = p.GetEcc()
+	p.Ecc, _ = p.GetEcc()
 
 	// 创建URL核心对象
 	p.Url = zurl.NewUrl()
@@ -87,7 +82,7 @@ func NewWithConfig(config *Config, log *zdpgo_log.Log) *Password {
 }
 
 // GetEcc 获取ECC加密对象
-func (p *Password) GetEcc() *Ecc {
+func (p *Password) GetEcc() (*Ecc, error) {
 	e := &Ecc{
 		Config: p.Config,
 	}
@@ -104,10 +99,10 @@ func (p *Password) GetEcc() *Ecc {
 	if (e.privateKey == nil || len(e.privateKey) == 0) && (e.publicKey == nil || len(e.publicKey) == 0) {
 		err := e.InitKey()
 		if err != nil {
-			p.Log.Error("初始化公钥和私钥失败")
+			return nil, err
 		}
 	}
 
 	// 返回
-	return e
+	return e, nil
 }

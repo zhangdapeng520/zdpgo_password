@@ -48,21 +48,18 @@ func (p *Password) AesDump(filePath string, jsonObj interface{}) error {
 	// 序列化JSON数据
 	jsonBytes, err := json.Marshal(jsonObj)
 	if err != nil {
-		p.Log.Error("json序列化对象失败", "error", err)
 		return err
 	}
 
 	// AES加密JSON数据
 	encryptBytes, err := p.Aes.Encrypt(jsonBytes)
 	if err != nil {
-		p.Log.Error("AES加密数据失败", "error", err)
 		return err
 	}
 
 	// 保存文件
 	err = ioutil.WriteFile(filePath, encryptBytes, os.ModePerm)
 	if err != nil {
-		p.Log.Error("保存加密数据失败", "error", err)
 		return err
 	}
 
@@ -74,14 +71,12 @@ func (p *Password) AesDumpData(key string, jsonObj interface{}) error {
 	// 序列化JSON数据
 	jsonBytes, err := json.Marshal(jsonObj)
 	if err != nil {
-		p.Log.Error("json序列化对象失败", "error", err)
 		return err
 	}
 
 	// AES加密JSON数据
 	encryptBytes, err := p.Aes.Encrypt(jsonBytes)
 	if err != nil {
-		p.Log.Error("AES加密数据失败", "error", err)
 		return err
 	}
 
@@ -95,7 +90,6 @@ func (p *Password) AesUpdate(filePath string, jsonObj interface{}, newAesKey str
 	// 读取原本的内容
 	err := p.AesLoad(filePath, jsonObj)
 	if err != nil {
-		p.Log.Error("读取原本的加密内容失败", "error", err)
 		return err
 	}
 
@@ -105,7 +99,6 @@ func (p *Password) AesUpdate(filePath string, jsonObj interface{}, newAesKey str
 	// 重新加密保存
 	err = p.AesDump(filePath, jsonObj)
 	if err != nil {
-		p.Log.Error("重新加密保存文件失败", "error", err)
 		return err
 	}
 
@@ -119,7 +112,6 @@ func (p *Password) AesUpdateData(key string, jsonObj interface{}, newAesKey stri
 	if value, ok := p.BytesMap[key]; ok {
 		err := p.AesLoadData(key, value, jsonObj)
 		if err != nil {
-			p.Log.Error("AES解密数据失败", "error", err)
 			return err
 		}
 
@@ -129,7 +121,6 @@ func (p *Password) AesUpdateData(key string, jsonObj interface{}, newAesKey stri
 		// 重新加密保存
 		err = p.AesDumpData(key, jsonObj)
 		if err != nil {
-			p.Log.Error("重新加密并保存数据失败", "error", err)
 			return err
 		}
 	}
@@ -143,21 +134,18 @@ func (p *Password) AesLoad(filePath string, jsonObj interface{}) error {
 	// 读取密码文件
 	fileBytes, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		p.Log.Error("读取密码文件失败", "error", err)
 		return err
 	}
 
 	// AES解密数据
 	decryptedBytes, err := p.Aes.Decrypt(fileBytes)
 	if err != nil {
-		p.Log.Error("AES解密数据失败", "error", err)
 		return err
 	}
 
 	// 读取JSON数据
 	err = json.Unmarshal(decryptedBytes, jsonObj)
 	if err != nil {
-		p.Log.Error("解析JSON数据失败", "error", err)
 		return err
 	}
 
@@ -172,14 +160,12 @@ func (p *Password) AesLoadData(key string, data []byte, jsonObj interface{}) err
 	// AES解密数据
 	decryptedBytes, err := p.Aes.Decrypt(data)
 	if err != nil {
-		p.Log.Error("AES解密数据失败", "error", err)
 		return err
 	}
 
 	// 读取JSON数据
 	err = json.Unmarshal(decryptedBytes, jsonObj)
 	if err != nil {
-		p.Log.Error("解析JSON数据失败", "error", err)
 		return err
 	}
 

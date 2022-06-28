@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/zhangdapeng520/zdpgo_log"
 	"github.com/zhangdapeng520/zdpgo_password"
 )
 
 func main() {
-	p := zdpgo_password.New(zdpgo_log.Tmp)
+	p := zdpgo_password.New()
 
 	data := "abc 123 张大鹏"
 	fmt.Println(data)

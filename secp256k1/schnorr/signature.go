@@ -8,8 +8,8 @@ package schnorr
 import (
 	"fmt"
 
-	"github.com/zhangdapeng520/zdpgo_password/libs/blake256"
-	"github.com/zhangdapeng520/zdpgo_password/libs/secp256k1"
+	"github.com/zhangdapeng520/zdpgo_password/blake256"
+	"github.com/zhangdapeng520/zdpgo_password/secp256k1"
 )
 
 const (

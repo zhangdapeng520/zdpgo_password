@@ -1,7 +1,6 @@
 package zdpgo_password
 
 import (
-	"github.com/zhangdapeng520/zdpgo_log"
 	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/aes"
 	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/hash"
 	"github.com/zhangdapeng520/zdpgo_password/core/algorithm/rsa"
@@ -9,12 +8,11 @@ import (
 )
 
 func getPassword() *Password {
-	log := zdpgo_log.NewWithDebug(true, "log.log")
 	p := NewWithConfig(&Config{
 		Aes:  aes.AesConfig{},
 		Rsa:  rsa.RsaConfig{},
 		Hash: hash.HashConfig{},
-	}, log)
+	})
 	return p
 }
 

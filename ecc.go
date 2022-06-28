@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"errors"
-	"github.com/zhangdapeng520/zdpgo_log"
 	"github.com/zhangdapeng520/zdpgo_password/goEncrypt"
 	"io/ioutil"
 	"os"
@@ -26,7 +25,6 @@ import (
 
 type Ecc struct {
 	Config     *Config
-	Log        *zdpgo_log.Log
 	privateKey []byte
 	publicKey  []byte
 }
@@ -38,7 +36,6 @@ func (e *Ecc) GetKey() ([]byte, []byte, error) {
 	if e.publicKey == nil || len(e.privateKey) == 0 {
 		publicKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PublicKeyFileName))
 		if err != nil {
-			e.Log.Error("读取公钥失败", "error", err)
 			return nil, nil, err
 		}
 		e.publicKey = publicKey
@@ -48,7 +45,6 @@ func (e *Ecc) GetKey() ([]byte, []byte, error) {
 	if e.privateKey == nil || len(e.publicKey) == 0 {
 		privateKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PrivateKeyFileName))
 		if err != nil {
-			e.Log.Error("读取私钥失败", "error", err)
 			return nil, nil, err
 		}
 		e.privateKey = privateKey
@@ -70,7 +66,6 @@ func (e *Ecc) InitKey() error {
 	if !Exists(e.Config.KeyPath) {
 		err = os.MkdirAll(e.Config.KeyPath, os.ModePerm)
 		if err != nil {
-			e.Log.Error("创建功key存放目录失败", "error", err)
 			return err
 		}
 	}
@@ -79,7 +74,6 @@ func (e *Ecc) InitKey() error {
 	if Exists(privateKeyFilePath) && Exists(publicKeyFilePath) {
 		err = e.SetKeyData(privateKeyFilePath, publicKeyFilePath)
 		if err != nil {
-			e.Log.Error("设置公钥和私钥数据失败", "error", err)
 			return err
 		}
 		return nil
@@ -88,14 +82,12 @@ func (e *Ecc) InitKey() error {
 	// 创建私钥
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
-		e.Log.Error("创建私钥失败", "error", err)
 		return err
 	}
 
 	// 序列化私钥
 	x509PrivateKey, err := x509.MarshalECPrivateKey(privateKey)
 	if err != nil {
-		e.Log.Error("序列化私钥失败", "error", err)
 		return err
 	}
 
@@ -106,19 +98,16 @@ func (e *Ecc) InitKey() error {
 	}
 	file, err := os.Create(privateKeyFilePath)
 	if err != nil {
-		e.Log.Error("创建私钥文件失败", "error", err)
 		return err
 	}
 	defer file.Close()
 	if err = pem.Encode(file, &block); err != nil {
-		e.Log.Error("写入私钥数据失败", "error", err)
 		return err
 	}
 
 	// 序列化公钥
 	x509PublicKey, err := x509.MarshalPKIXPublicKey(&privateKey.PublicKey)
 	if err != nil {
-		e.Log.Error("序列化公钥失败", "error", err)
 		return err
 	}
 
@@ -129,20 +118,17 @@ func (e *Ecc) InitKey() error {
 	}
 	publicFile, err := os.Create(publicKeyFilePath)
 	if err != nil {
-		e.Log.Error("创建公钥文件失败", "error", err)
 		return err
 	}
 	defer publicFile.Close()
 
 	if err = pem.Encode(publicFile, &publicBlock); err != nil {
-		e.Log.Error("写入公钥数据失败", "error", err)
 		return err
 	}
 
 	// 设置公钥和私钥数据
 	err = e.SetKeyData(privateKeyFilePath, publicKeyFilePath)
 	if err != nil {
-		e.Log.Error("设置公钥和私钥数据失败", "error", err)
 		return err
 	}
 
@@ -155,13 +141,11 @@ func (e *Ecc) SetKeyData(privateKeyFilePath, publicKeyFilePath string) error {
 	var err error
 	e.privateKey, err = ioutil.ReadFile(privateKeyFilePath)
 	if err != nil {
-		e.Log.Error("读取私钥文件失败", "error", err, "file", privateKeyFilePath)
 		return err
 	}
 
 	e.publicKey, err = ioutil.ReadFile(publicKeyFilePath)
 	if err != nil {
-		e.Log.Error("读取公钥文件失败", "error", err, "file", publicKeyFilePath)
 		return err
 	}
 
@@ -174,7 +158,6 @@ func (e *Ecc) Encrypt(data []byte) ([]byte, error) {
 	if e.publicKey == nil || len(e.privateKey) == 0 {
 		publicKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PublicKeyFileName))
 		if err != nil {
-			e.Log.Error("读取公钥失败", "error", err)
 			return nil, err
 		}
 		e.publicKey = publicKey
@@ -183,7 +166,6 @@ func (e *Ecc) Encrypt(data []byte) ([]byte, error) {
 	// 加密
 	cryptText, err := goEncrypt.EccEncrypt(data, e.publicKey)
 	if err != nil {
-		e.Log.Error("ECC加密数据失败", "error", err)
 		return nil, err
 	}
 
@@ -201,7 +183,6 @@ func (e *Ecc) EncryptByPublicKey(data, publicKey []byte) ([]byte, error) {
 	// 加密
 	cryptText, err := goEncrypt.EccEncrypt(data, publicKey)
 	if err != nil {
-		e.Log.Error("ECC加密数据失败", "error", err)
 		return nil, err
 	}
 
@@ -215,7 +196,6 @@ func (e *Ecc) Decrypt(cryptData []byte) ([]byte, error) {
 	if e.privateKey == nil || len(e.publicKey) == 0 {
 		privateKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PrivateKeyFileName))
 		if err != nil {
-			e.Log.Error("读取私钥失败", "error", err)
 			return nil, err
 		}
 		e.privateKey = privateKey
@@ -224,7 +204,6 @@ func (e *Ecc) Decrypt(cryptData []byte) ([]byte, error) {
 	// 解密
 	data, err := goEncrypt.EccDecrypt(cryptData, e.privateKey)
 	if err != nil {
-		e.Log.Error("ECC解密数据失败", "error", err)
 		return nil, err
 	}
 
@@ -236,7 +215,6 @@ func (e *Ecc) Decrypt(cryptData []byte) ([]byte, error) {
 func (e *Ecc) DecryptByPrivateKey(cryptData, privateKey []byte) ([]byte, error) {
 	data, err := goEncrypt.EccDecrypt(cryptData, privateKey)
 	if err != nil {
-		e.Log.Error("ECC解密数据失败", "error", err)
 		return nil, err
 	}
 
@@ -248,7 +226,6 @@ func (e *Ecc) DecryptByPrivateKey(cryptData, privateKey []byte) ([]byte, error) 
 func (e *Ecc) EncryptString(data string) (string, error) {
 	encryptData, err := e.Encrypt([]byte(data))
 	if err != nil {
-		e.Log.Error("加密数据失败", "error", err)
 		return "", err
 	}
 	return base64.StdEncoding.EncodeToString(encryptData), nil
@@ -257,7 +234,6 @@ func (e *Ecc) EncryptString(data string) (string, error) {
 func (e *Ecc) EncryptStringNoBase64(data string) (string, error) {
 	encryptData, err := e.Encrypt([]byte(data))
 	if err != nil {
-		e.Log.Error("加密数据失败", "error", err)
 		return "", err
 	}
 	return string(encryptData), nil
@@ -267,13 +243,11 @@ func (e *Ecc) EncryptStringNoBase64(data string) (string, error) {
 func (e *Ecc) DecryptString(cryptData string) (string, error) {
 	decodeData, err := base64.StdEncoding.DecodeString(cryptData)
 	if err != nil {
-		e.Log.Error("base64解密字符串失败", "error", err)
 		return "", err
 	}
 
 	decrypt, err := e.Decrypt(decodeData)
 	if err != nil {
-		e.Log.Error("ECC解密字符串失败", "error", err)
 		return "", err
 	}
 
@@ -283,7 +257,6 @@ func (e *Ecc) DecryptString(cryptData string) (string, error) {
 func (e *Ecc) DecryptStringNoBase64(cryptData string) (string, error) {
 	decrypt, err := e.Decrypt([]byte(cryptData))
 	if err != nil {
-		e.Log.Error("ECC解密字符串失败", "error", err)
 		return "", err
 	}
 	return string(decrypt), nil
@@ -295,7 +268,6 @@ func (e *Ecc) Sign(data []byte) ([]byte, error) {
 	if e.privateKey == nil || len(e.privateKey) == 0 {
 		privateKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PrivateKeyFileName))
 		if err != nil {
-			e.Log.Error("读取私钥失败", "error", err)
 			return nil, err
 		}
 		e.privateKey = privateKey
@@ -304,7 +276,6 @@ func (e *Ecc) Sign(data []byte) ([]byte, error) {
 	// 获取结果和签名
 	resultData, signData, err := goEncrypt.EccSign(data, e.privateKey)
 	if err != nil {
-		e.Log.Error("获取结果和签名失败", "error", err)
 		return nil, err
 	}
 
@@ -323,7 +294,6 @@ func (e *Ecc) Verify(originData, signData []byte) bool {
 	if e.publicKey == nil || len(e.publicKey) == 0 {
 		publicKey, err := ioutil.ReadFile(path.Join(e.Config.KeyPath, e.Config.EccKey.PrivateKeyFileName))
 		if err != nil {
-			e.Log.Error("读取私钥失败", "error", err)
 			return false
 		}
 		e.publicKey = publicKey
@@ -333,7 +303,6 @@ func (e *Ecc) Verify(originData, signData []byte) bool {
 	signStr := string(signData)
 	tempData := strings.Split(signStr, "zhangdapeng520")
 	if len(tempData) != 2 {
-		e.Log.Error("非法的签名数据")
 		return false
 	}
 
@@ -341,13 +310,11 @@ func (e *Ecc) Verify(originData, signData []byte) bool {
 	resultStr, signStr := tempData[0], tempData[1]
 	resultData, err := base64.StdEncoding.DecodeString(resultStr)
 	if err != nil {
-		e.Log.Error("解码结果字符串失败", "error", err)
 		return false
 	}
 
 	realSignData, err := base64.StdEncoding.DecodeString(signStr)
 	if err != nil {
-		e.Log.Error("解码签名字符串失败", "error", err)
 		return false
 	}
 

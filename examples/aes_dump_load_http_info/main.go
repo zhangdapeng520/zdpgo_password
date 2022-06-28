@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/zhangdapeng520/zdpgo_log"
 	"github.com/zhangdapeng520/zdpgo_password"
 	"github.com/zhangdapeng520/zdpgo_password/generator"
 )
 
 func main() {
-	p := zdpgo_password.New(zdpgo_log.Tmp)
+	p := zdpgo_password.New()
 	data := struct {
 		Username string `json:"username"`
 		Password string `json:"password"`

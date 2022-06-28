@@ -3,7 +3,6 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"github.com/zhangdapeng520/zdpgo_log"
 	"github.com/zhangdapeng520/zdpgo_password"
 	"github.com/zhangdapeng520/zdpgo_password/generator"
 )
@@ -12,7 +11,7 @@ import (
 var emailData []byte
 
 func main() {
-	p := zdpgo_password.New(zdpgo_log.Tmp)
+	p := zdpgo_password.New()
 	fmt.Println("============", string(emailData))
 
 	// 读取加密数据
