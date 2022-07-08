@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/zhangdapeng520/zdpgo_password"
-	"github.com/zhangdapeng520/zdpgo_password/generator"
 )
 
 //go:embed email
@@ -23,7 +22,7 @@ func main() {
 	fmt.Println("读取加密数据成功：", data)
 
 	// 更新加密数据
-	key := generator.DefaultGenerator.GenerateByLength(32)
+	key := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	err = p.AesUpdateData("email", &data, key)
 	if err != nil {
 		panic(err)

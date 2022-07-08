@@ -1,12 +1,3 @@
-// Copyright (c) 2019 The Decred developers
-// Originally written in 2011-2012 by Dmitry Chestnykh.
-// Use of this source code is governed by an ISC
-// license that can be found in the LICENSE file.
-
-// BLAKE-256 block step.
-// In its own file so that a faster assembly or C version
-// can be substituted easily.
-
 package blake256
 
 const (

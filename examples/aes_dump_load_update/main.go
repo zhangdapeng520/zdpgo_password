@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/zhangdapeng520/zdpgo_password"
-	"github.com/zhangdapeng520/zdpgo_password/generator"
 )
 
 func main() {
@@ -30,7 +29,7 @@ func main() {
 	fmt.Println("读取数据成功", data)
 
 	// 更新文件
-	key := generator.DefaultGenerator.GenerateByLength(32)
+	key := "abcdefabcdefabcdefabcdefabcdefab"
 	err = p.AesUpdate("email", &data, key)
 	if err != nil {
 		panic(err)
