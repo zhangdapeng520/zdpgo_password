@@ -23,25 +23,20 @@ import (
 )
 
 func main() {
-	p := zdpgo_password.New()
-
 	data := "abc 123 张大鹏"
+	salt := "abc123456"
 	fmt.Println(data)
 
-	var (
-		result string
-		err    error
-	)
-
 	// sha256加密
-	result, err = p.Hash.Sha256.EncryptString(data)
+	result, err := zdpgo_password.Sha256EncryptString(data, salt)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(result)
 
 	// sha256校验
-	fmt.Println(p.Hash.Sha256.ValidateString(data, result))
+	fmt.Println(zdpgo_password.Sha256ValidateString(data, salt, result))     // 通过
+	fmt.Println(zdpgo_password.Sha256ValidateString(data+"a", salt, result)) // 不同过
 }
 ```
 
@@ -75,5 +70,9 @@ func main() {
 ### v1.3.2
 
 - sha256校验
+
+### v1.3.3
+
+- sha256加密和校验方法使用方式优化，更简单
 
 
