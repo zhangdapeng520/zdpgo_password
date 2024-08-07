@@ -27,6 +27,15 @@ func (sh *Sha256) EncryptString(data string) (string, error) {
 	return hex.EncodeToString(s.Sum([]byte(sh.Key))), nil
 }
 
+// ValidateString 校验字符串是否符合加密后的要求
+func (sh *Sha256) ValidateString(data, encrypted string) bool {
+	dataEncrypted, err := sh.EncryptString(data)
+	if err != nil {
+		return false
+	}
+	return encrypted == dataEncrypted
+}
+
 // Encrypt 加密字节数组
 func (sh *Sha256) Encrypt(data []byte) ([]byte, error) {
 	// 创建sha256对象

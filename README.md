@@ -2,6 +2,49 @@
 
 专用于加密解密的组件，以HASH和AES加密解密为主
 
+## 安装
+
+```bash
+go get github.com/zhangdapeng520/zdpgo_password
+```
+
+## 基本用法
+
+### sha256加密和校验
+
+此方法可以用于一般的用户登录信息中密码的加密和校验。
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/zhangdapeng520/zdpgo_password"
+)
+
+func main() {
+	p := zdpgo_password.New()
+
+	data := "abc 123 张大鹏"
+	fmt.Println(data)
+
+	var (
+		result string
+		err    error
+	)
+
+	// sha256加密
+	result, err = p.Hash.Sha256.EncryptString(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	// sha256校验
+	fmt.Println(p.Hash.Sha256.ValidateString(data, result))
+}
+```
+
 ## 版本历史
 
 - v0.1.0 2022/01/01
@@ -29,6 +72,8 @@
 - v1.3.0 2022/07/08 优化：移除ECC、RSA、File加密解密
 - v1.3.1 2022/07/08 新增：hash相关的方法
 
-## 使用示例
+### v1.3.2
 
-请查看 examples 目录
+- sha256校验
+
+
